@@ -9,16 +9,16 @@ const Patient = require('../models/patient');
 const Doctor = require('../models/doctor')
 const SECRET = process.env.SECRET;
 
-const patientSignupSchema = Joi.object({
-    user_type : Joi.string().valid('patient').required(),
-    email : Joi.string().email().required(), 
-    password : Joi.string().min(8).required(), 
-    first_name : Joi.string().required(), 
-    last_name : Joi.string().required(), 
-    phone_number : Joi.number().required(), 
-    dob : Joi.date().required(), 
-    medical_history : Joi.string().allow('')
-})
+// const patientSignupSchema = Joi.object({
+//     user_type : Joi.string().valid('patient').required(),
+//     email : Joi.string().email().required(), 
+//     password : Joi.string().min(8).required(), 
+//     first_name : Joi.string().required(), 
+//     last_name : Joi.string().required(), 
+//     phone_number : Joi.number().required(), 
+//     dob : Joi.date().required(), 
+//     medical_history : Joi.string().allow('')
+// })
 
 // const doctorSignupSchema = Joi.object({
 //     user_type : Joi.string().valid('doctor').required(),
@@ -104,7 +104,13 @@ module.exports = {
             const refreshToken = crypto.randomBytes(64).toString('hex');
             newUser.refreshToken = refreshToken;
     
-            await newUser.save();
+            await newUser.save()
+                .then(doc => {
+                    console.log('doctor saved', doc)
+                })
+                .catch(err => {
+                    console.log('error saving doctor', err)
+                });
     
             const token = jwt.sign(
                 { id: newUser.id }, 

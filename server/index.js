@@ -4,13 +4,13 @@ const cors = require('cors');
 const mongoose = require('mongoose')
 
 const app = express();
-const PORT = process.env.PORT || 3000;
-const MONGOURI = process.env.MONGOURI;
+const {PORT} = process.env || 4000;
+const {MONGOURI} = process.env; 
 
 const Patient = require('./models/patient');
 const Doctor = require('./models/doctor');
 const Appointment = require('./models/appointment');
-
+ 
 const userController = require('./controllers/users');
 const appointmentController = require('./controllers/appointments');
 
