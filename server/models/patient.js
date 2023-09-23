@@ -1,22 +1,35 @@
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs')
+const { DataTypes, Model, sequelize } = require('sequelize');
+const bcrypt = require('bcryptjs');
 
-const patientSchema = new mongoose.Schema({
-    user_type: { type: String, required: true},
-    first_name: { type: String, required: true},
-    last_name: { type: String, required: true},
-    email: { type: String, required: true},
-    password: { type: String, required: true},
-    phone_number: { type: Number, required: true},
-    dob: { type: Date, required: true},
-    medical_history: String,
-}, { timestamps: true });
-
-patientSchema.pre('save', async function(next) {
-    if (this.isModified('password')) {
-        this.password = await bcrypt.hash(this.password, 10);
+class Patient extends Model {
+    // Add a hook for password hashing
+    static init(sequelize) {
+        super.init({
+            // Fields
+            user_type: { type: DataTypes.STRING, allowNull: false },
+            first_name: { type: DataTypes.STRING, allowNull: false },
+            last_name: { type: DataTypes.STRING, allowNull: false },
+            email: { type: DataTypes.STRING, allowNull: false },
+            password: { type: DataTypes.STRING, allowNull: false },
+            phone_number: { type: DataTypes.INTEGER, allowNull: false },
+            dob: { type: DataTypes.DATE, allowNull: false },
+            medical_history: DataTypes.STRING,
+        }, {
+            hooks: {
+                beforeCreate: async (patient) => {
+                    patient.password = await bcrypt.hash(patient.password, 10);
+                },
+                beforeUpdate: async (patient) => {
+                    if (patient.changed('password')) {
+                        patient.password = await bcrypt.hash(patient.password, 10);
+                    }
+                }
+            },
+            sequelize,
+            modelName: 'Patient',
+            timestamps: true,
+        });
     }
-    next();
-});
+}
 
-module.exports = mongoose.model('Patient', patientSchema);
+module.exports = Patient;

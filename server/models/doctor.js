@@ -1,23 +1,37 @@
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs')
+const { DataTypes, Model, sequelize } = require('sequelize');
+const bcrypt = require('bcryptjs');
 
-const doctorSchema = new mongoose.Schema({
-    user_type: { type: String},
-    first_name: { type: String},
-    last_name: { type: String},
-    email: { type: String},
-    password: { type: String},
-    phone_number: { type: Number},
-    dob: { type: Date},
-    credentials: { type: String},
-    specializations: { type: String},
-}, { timestamps: true });
 
-doctorSchema.pre('save', async function(next) {
-    if (this.isModified('password')) {
-        this.password = await bcrypt.hash(this.password, 10);
+class Doctor extends Model {
+    // Add a hook for password hashing
+    static init(sequelize) {
+        super.init({
+            // Fields
+            user_type: DataTypes.STRING,
+            first_name: DataTypes.STRING,
+            last_name: DataTypes.STRING,
+            email: DataTypes.STRING,
+            password: DataTypes.STRING,
+            phone_number: DataTypes.INTEGER,
+            dob: DataTypes.DATE,
+            credentials: DataTypes.STRING,
+            specializations: DataTypes.STRING,
+        }, {
+            hooks: {
+                beforeCreate: async (doctor) => {
+                    doctor.password = await bcrypt.hash(doctor.password, 10);
+                },
+                beforeUpdate: async (doctor) => {
+                    if (doctor.changed('password')) {
+                        doctor.password = await bcrypt.hash(doctor.password, 10);
+                    }
+                }
+            },
+            sequelize,
+            modelName: 'Doctor',
+            timestamps: true,
+        });
     }
-    next();
-});
+}
 
-module.exports = mongoose.model('Doctor', doctorSchema);
+module.exports = Doctor;

@@ -1,30 +1,40 @@
-const mongoose = require('mongoose');
+const { DataTypes, Model } = require('sequelize');
 
-const appointmentSchema = new mongoose.Schema({
-    patient: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Patient',
-        required: true
+
+class Appointment extends Model {
+    // Additional instance methods if needed
+}
+
+Appointment.init({
+    patientId: {
+        type: DataTypes.UUID, // Assuming UUIDs are used
+        allowNull: false,
     },
-    doctor: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Doctor',
-        required: true
+    doctorId: {
+        type: DataTypes.UUID,
+        allowNull: false,
     },
-    appointment_date: Date,
+    appointmentDate: {
+        type: DataTypes.DATE,
+        allowNull: false,
+    },
     status: {
-        type: String,
-        enum: [
-            'Pending',
-            'Confirmed',
-            'Canceled',
-            'Completed'
-        ],
-        default: 'Pending',
-        required: true
+        type: DataTypes.ENUM('Pending', 'Confirmed', 'Canceled', 'Completed'),
+        defaultValue: 'Pending',
+        allowNull: false,
     },
-    appointment_type: { type: String, required: true},
-    appointment_text: { type: String, required: true},
-}, { timestamps: true })
+    appointmentType: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    appointmentText: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    }
+}, {
+    sequelize,
+    modelName: 'Appointment',
+    timestamps: true,
+});
 
-module.exports = mongoose.model('Appointment', appointmentSchema);
+module.exports = Appointment;
