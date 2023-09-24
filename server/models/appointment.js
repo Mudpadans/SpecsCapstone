@@ -1,4 +1,5 @@
 const { DataTypes, Model } = require('sequelize');
+const sequelize
 
 
 class Appointment extends Model {
@@ -32,7 +33,7 @@ Appointment.init({
         allowNull: false,
     }
 }, {
-    sequelize,
+    sequelize
     modelName: 'Appointment',
     timestamps: true,
 });
