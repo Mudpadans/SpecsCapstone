@@ -1,10 +1,10 @@
-const { DataTypes, Model } = require('sequelize');
-const sequelize
 
+const sequelize = require('../database');
+const { DataTypes, Model } = require('sequelize');
 
 class Appointment extends Model {
-    // Additional instance methods if needed
 }
+console.log(sequelize)
 
 Appointment.init({
     patientId: {
@@ -33,7 +33,7 @@ Appointment.init({
         allowNull: false,
     }
 }, {
-    sequelize
+    sequelize,
     modelName: 'Appointment',
     timestamps: true,
 });
