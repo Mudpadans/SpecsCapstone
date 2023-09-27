@@ -1,37 +1,43 @@
-const { DataTypes, Model, sequelize } = require('sequelize');
+const { DataTypes } = require('sequelize');
 const bcrypt = require('bcryptjs');
+const {Sequelize} = require('sequelize')
+const {CONNECTION_STRING} = process.env; 
 
+const sequelize = new Sequelize(CONNECTION_STRING, {
+  dialect: 'postgres', 
+  logging: false,
+});
 
-class Doctor extends Model {
-    // Add a hook for password hashing
-    static init(sequelize) {
-        super.init({
-            // Fields
-            user_type: DataTypes.STRING,
-            first_name: DataTypes.STRING,
-            last_name: DataTypes.STRING,
-            email: DataTypes.STRING,
-            password: DataTypes.STRING,
-            phone_number: DataTypes.INTEGER,
-            dob: DataTypes.DATE,
-            credentials: DataTypes.STRING,
-            specializations: DataTypes.STRING,
-        }, {
-            hooks: {
-                beforeCreate: async (doctor) => {
-                    doctor.password = await bcrypt.hash(doctor.password, 10);
-                },
-                beforeUpdate: async (doctor) => {
-                    if (doctor.changed('password')) {
-                        doctor.password = await bcrypt.hash(doctor.password, 10);
-                    }
-                }
+module.exports = {
+    Doctor: sequelize.define('Doctor', {
+        id: {
+            type: DataTypes.INTEGER,
+            autoIncrement: true,
+            allowNull: false,
+            primaryKey: true
+        },
+        user_type: DataTypes.STRING,
+        first_name: DataTypes.STRING, 
+        last_name: DataTypes.STRING, 
+        email: DataTypes.STRING,
+        password: DataTypes.STRING,
+        phone_number: DataTypes.INTEGER,
+        dob: DataTypes.DATE,
+        credentials: DataTypes.STRING,
+        specializations: DataTypes.STRING,
+    }, {
+        hooks: {
+            beforeCreate: async (patient) => {
+                patient.password = await bcrypt.hash(patient.password, 10);
             },
-            sequelize,
-            modelName: 'Doctor',
-            timestamps: true,
-        });
-    }
+            beforeUpdate: async (patient) => {
+                if (patient.changed('password')) {
+                    patient.password = await bcrypt.hash(patient.password, 10);
+                }
+            }
+        },
+        sequelize,
+        modelName: 'Doctor',
+        timestamps: true,
+    })
 }
-
-module.exports = Doctor;

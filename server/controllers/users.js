@@ -5,8 +5,16 @@ const crypto = require('crypto');
 const Joi = require('joi')
 const rateLimit = require('express-rate-limit')
 
-const Patient = require('../models/patient');
-const Doctor = require('../models/doctor')
+const {Sequelize} = require('sequelize')
+const {CONNECTION_STRING} = process.env
+
+const sequelize = new Sequelize(CONNECTION_STRING, {
+    dialect: 'postgres', 
+    logging: false,
+  });
+
+const {Patient} = require('../models/patient');
+const {Doctor} = require('../models/doctor');
 const SECRET = process.env.SECRET;
 
 // const patientSignupSchema = Joi.object({
@@ -57,26 +65,34 @@ module.exports = {
 
         const { user_type } = req.body
     
-        let validationResult;
-        if (user_type === 'doctor') {
-            validationResult = Doctor.validate(req.body)
-        } else if (user_type === 'patient') {
-            validationResult = Patient.validate(req.body)
-        }
+        // let validationResult;
+        // if (user_type === 'doctor') {
+        //     validationResult = Doctor.validate(req.body)
+        // } else if (user_type === 'patient') {
+        //     validationResult = Patient.validate(req.body)
+        // }
     
-        if (validationResult.error) {
-            return res.status(400).json({ 
-                error: validationResult.error.details[0].message 
-            })
-        }
+        // if (validationResult.error) {
+        //     return res.status(400).json({ 
+        //         error: validationResult.error.details[0].message 
+        //     })
+        // }
     
         try {
             const hashedPassword = await bcrypt.hash(req.body.password, 10);
-            let newUser;
+            // let newUser = {
+            //     user_type : user_type,
+            //     email : req.body.email,
+            //     password : hashedPassword,
+            //     first_name : req.body.firstName,
+            //     last_name : req.body.lastName,
+            //     phone_number : req.body.phoneNumber,
+            //     dob : req.body.birthDate,
+            // }
     
             if (user_type === 'patient') {
-                newUser = new Patient({
-                    user_type : 'patient',
+                const newUser = {
+                    user_type : user_type,
                     email : req.body.email,
                     password : hashedPassword,
                     first_name : req.body.firstName,
@@ -84,12 +100,21 @@ module.exports = {
                     phone_number : req.body.phoneNumber,
                     dob : req.body.birthDate,
                     medicalHistory : req.body.medicalHistory,
-                });
+                };
+
+                Patient.create(newUser)
+                    .then(res.status(201).send('new patient'))
+                    .catch((error) => {
+                        console.log(error)
+                    })
+
+                    
             }
+            
     
             if (user_type === 'doctor') {
-                newUser = new Doctor({
-                    user_type : 'doctor',
+                const newUser = {
+                    user_type : user_type,
                     email : req.body.email,
                     password : hashedPassword,
                     first_name : req.body.firstName,
@@ -98,37 +123,38 @@ module.exports = {
                     dob : req.body.birthDate,
                     credentials : req.body.credentials,
                     specializations : req.body.specializations,
-                });
+                };
+
+                Doctor.create(newUser)
+                    .then(res.status(201).send('new doctor'))
+                    .catch((error) => {
+                        console.log(error)
+                    })
             }
+
+            // const refreshToken = crypto.randomBytes(64).toString('hex');
+            // newUser.refreshToken = refreshToken;
     
-            const refreshToken = crypto.randomBytes(64).toString('hex');
-            newUser.refreshToken = refreshToken;
+            // const token = jwt.sign(
+            //     { id: newUser.id }, 
+            //     SECRET, 
+            //     { expiresIn: '1h', algorithm: 'HS256'}
+            // )
     
-            await newUser.save()
-                .then(doc => {
-                    console.log('doctor saved', doc)
-                })
-                .catch(err => {
-                    console.log('error saving doctor', err)
-                });
+            // const safeUser = {
+            //     id : newUser.id,
+            //     email : newUser.email,
+            // }
     
-            const token = jwt.sign(
-                { id: newUser.id }, 
-                SECRET, 
-                { expiresIn: '1h', algorithm: 'HS256'}
-            )
-    
-            const safeUser = {
-                id : newUser.id,
-                email : newUser.email,
+            // res.status(201).json({ 
+            //     message: 'user created', 
+            //     user: safeUser, 
+                // token,
+                // refreshToken
+            // })
+            else {
+                res.status(422)
             }
-    
-            res.status(201).json({ 
-                message: 'user created', 
-                user: safeUser, 
-                token,
-                refreshToken
-            })
         } catch(err) {
             next(err);
         }

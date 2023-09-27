@@ -4,19 +4,20 @@ const cors = require('cors');
 
 const app = express();
 const PORT = process.env.PORT || 4000;
-const sequelize = require('./database')
+const {Sequelize} = require('sequelize')
+const {CONNECTION_STRING} = process.env; 
 
-sequelize.authenticate()
-  .then(() => {
+const sequelize = new Sequelize(CONNECTION_STRING, {
+  dialect: 'postgres', 
+  logging: false,
+});
+
+ 
     console.log('Database connected')
   
     const Patient = require('./models/patient'); 
     const Doctor = require('./models/doctor');
     const Appointment = require('./models/appointment');
-
-    Patient.init(sequelize);
-    Doctor.init(sequelize);
-    Appointment.init(sequelize);
 
     app.use(express.json());
     app.use(cors());
@@ -34,8 +35,9 @@ sequelize.authenticate()
     app.put('/updateAppointment/:appointment_id', appointmentController.updateAppointment);
     app.delete('/deleteAppointment/:appointment_id', appointmentController.deleteAppointment);
 
-    app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
-    });
-  })
-  .catch(err => console.log('Error connecting to the database', err));
+    sequelize.sync()
+    .then(() => {
+        app.listen(PORT, () => console.log(`db sync successful & server running on port ${PORT}`))
+    })
+    .catch(err => console.log(err))
+

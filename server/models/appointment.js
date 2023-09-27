@@ -1,14 +1,20 @@
 
-const sequelize = require('../database');
-const { DataTypes, Model } = require('sequelize');
+const { DataTypes, Model } = require('sequelize')
+
+const {Sequelize} = require('sequelize')
+const {CONNECTION_STRING} = process.env; 
+
+const sequelize = new Sequelize(CONNECTION_STRING, {
+  dialect: 'postgres', 
+  logging: false,
+});
 
 class Appointment extends Model {
 }
-console.log(sequelize)
 
 Appointment.init({
     patientId: {
-        type: DataTypes.UUID, // Assuming UUIDs are used
+        type: DataTypes.UUID,
         allowNull: false,
     },
     doctorId: {

@@ -2,6 +2,14 @@ const express = require('express');
 const router = express.Router();
 const Joi = require('joi');
 
+const {Sequelize} = require('sequelize')
+const {CONNECTION_STRING} = process.env
+
+const sequelize = new Sequelize(CONNECTION_STRING, {
+    dialect: 'postgres', 
+    logging: false,
+  });
+
 const Appointment = require('../models/appointment');
 const isAuthenticated = require('../middleware/isAuthenticated');
 
