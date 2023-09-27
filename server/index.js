@@ -4,13 +4,7 @@ const cors = require('cors');
 
 const app = express();
 const PORT = process.env.PORT || 4000;
-const {Sequelize} = require('sequelize')
-const {CONNECTION_STRING} = process.env; 
-
-const sequelize = new Sequelize(CONNECTION_STRING, {
-  dialect: 'postgres', 
-  logging: false,
-});
+const {sequelize} = require('./database')
 
  
     console.log('Database connected')

@@ -1,13 +1,7 @@
 
 const { DataTypes, Model } = require('sequelize')
 
-const {Sequelize} = require('sequelize')
-const {CONNECTION_STRING} = process.env; 
-
-const sequelize = new Sequelize(CONNECTION_STRING, {
-  dialect: 'postgres', 
-  logging: false,
-});
+const {sequelize} = require('../database')
 
 class Appointment extends Model {
 }

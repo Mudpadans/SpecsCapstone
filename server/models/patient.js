@@ -1,13 +1,7 @@
 const { DataTypes } = require('sequelize');
 const bcrypt = require('bcryptjs');
 
-const {Sequelize} = require('sequelize')
-const {CONNECTION_STRING} = process.env; 
-
-const sequelize = new Sequelize(CONNECTION_STRING, {
-  dialect: 'postgres', 
-  logging: false,
-});
+const {sequelize} = require('../database')
 
 module.exports = {
     Patient: sequelize.define('Patient', {
@@ -22,7 +16,7 @@ module.exports = {
         last_name: DataTypes.STRING,
         email: DataTypes.STRING,
         password: DataTypes.STRING, 
-        phone_number: DataTypes.INTEGER,
+        phone_number: DataTypes.BIGINT,
         dob: DataTypes.DATE,
         medical_history: DataTypes.STRING,
     }, {

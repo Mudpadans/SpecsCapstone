@@ -3,42 +3,10 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs')
 const crypto = require('crypto');
 const Joi = require('joi')
-const rateLimit = require('express-rate-limit')
-
-const {Sequelize} = require('sequelize')
-const {CONNECTION_STRING} = process.env
-
-const sequelize = new Sequelize(CONNECTION_STRING, {
-    dialect: 'postgres', 
-    logging: false,
-  });
 
 const {Patient} = require('../models/patient');
 const {Doctor} = require('../models/doctor');
 const SECRET = process.env.SECRET;
-
-// const patientSignupSchema = Joi.object({
-//     user_type : Joi.string().valid('patient').required(),
-//     email : Joi.string().email().required(), 
-//     password : Joi.string().min(8).required(), 
-//     first_name : Joi.string().required(), 
-//     last_name : Joi.string().required(), 
-//     phone_number : Joi.number().required(), 
-//     dob : Joi.date().required(), 
-//     medical_history : Joi.string().allow('')
-// })
-
-// const doctorSignupSchema = Joi.object({
-//     user_type : Joi.string().valid('doctor').required(),
-//     email : Joi.string().email().required(), 
-//     password : Joi.string().min(8).required(), 
-//     first_name : Joi.string().required(), 
-//     last_name : Joi.string().required(), 
-//     phone_number : Joi.number().required(), 
-//     dob : Joi.date().required(), 
-//     credentials : Joi.string().required(),
-//     specializations : Joi.string().required()
-// })
 
 const loginSchema = Joi.object({
     email: Joi.string().email().required(), 
@@ -54,157 +22,123 @@ const typeChecker = async (user_type, parameter, value) => {
     }
 }
 
-const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 100
-})
-
 module.exports = {
-    signup: async (req, res, next) => {
+    signup: async (req, res) => {
         console.log('received request body:', req.body)
-
-        const { user_type } = req.body
-    
-        // let validationResult;
-        // if (user_type === 'doctor') {
-        //     validationResult = Doctor.validate(req.body)
-        // } else if (user_type === 'patient') {
-        //     validationResult = Patient.validate(req.body)
-        // }
-    
-        // if (validationResult.error) {
-        //     return res.status(400).json({ 
-        //         error: validationResult.error.details[0].message 
-        //     })
-        // }
     
         try {
-            const hashedPassword = await bcrypt.hash(req.body.password, 10);
-            // let newUser = {
-            //     user_type : user_type,
-            //     email : req.body.email,
-            //     password : hashedPassword,
-            //     first_name : req.body.firstName,
-            //     last_name : req.body.lastName,
-            //     phone_number : req.body.phoneNumber,
-            //     dob : req.body.birthDate,
-            // }
+            const { 
+                user_type,
+                email,
+                password,
+                first_name: firstName,
+                last_name: lastName,
+                phone_number: phoneNumber,
+                dob: birthDate,
+                medicalHistory,
+                credentials,
+                specializations
+            } = req.body
+
+            const emailExistsInPatients = await Patient.findOne({ where: { email } });
+            const emailExistsInDoctors = await Doctor.findOne({ where: { email } });
+
+            if (emailExistsInPatients || emailExistsInDoctors) {
+                return res.status(409).send('Email is already taken!');
+            }
+
+            const hashedPassword = await bcrypt.hash(password, 10);
+            let newUser;
     
             if (user_type === 'patient') {
-                const newUser = {
-                    user_type : user_type,
-                    email : req.body.email,
-                    password : hashedPassword,
-                    first_name : req.body.firstName,
-                    last_name : req.body.lastName,
-                    phone_number : req.body.phoneNumber,
-                    dob : req.body.birthDate,
-                    medicalHistory : req.body.medicalHistory,
-                };
-
-                Patient.create(newUser)
-                    .then(res.status(201).send('new patient'))
-                    .catch((error) => {
-                        console.log(error)
-                    })
-
-                    
-            }
-            
-    
-            if (user_type === 'doctor') {
-                const newUser = {
-                    user_type : user_type,
-                    email : req.body.email,
-                    password : hashedPassword,
-                    first_name : req.body.firstName,
-                    last_name : req.body.lastName,
-                    phone_number : req.body.phoneNumber,
-                    dob : req.body.birthDate,
-                    credentials : req.body.credentials,
-                    specializations : req.body.specializations,
-                };
-
-                Doctor.create(newUser)
-                    .then(res.status(201).send('new doctor'))
-                    .catch((error) => {
-                        console.log(error)
-                    })
+                newUser = await Patient.create({
+                    user_type,
+                    email,
+                    password: hashedPassword,
+                    first_name: firstName,
+                    last_name: lastName,
+                    phone_number: phoneNumber,
+                    dob: birthDate,
+                    medicalHistory,
+                });
+            } else if (user_type === 'doctor') {
+                newUser = await Doctor.create({
+                    user_type,
+                    email,
+                    password: hashedPassword,
+                    first_name: firstName,
+                    last_name: lastName,
+                    phone_number: phoneNumber,
+                    dob: birthDate,
+                    credentials,
+                    specializations,
+                });
+            } else {
+                return res.status(400).send('Invalid user type provided!')
             }
 
-            // const refreshToken = crypto.randomBytes(64).toString('hex');
-            // newUser.refreshToken = refreshToken;
-    
-            // const token = jwt.sign(
-            //     { id: newUser.id }, 
-            //     SECRET, 
-            //     { expiresIn: '1h', algorithm: 'HS256'}
-            // )
-    
-            // const safeUser = {
-            //     id : newUser.id,
-            //     email : newUser.email,
-            // }
-    
-            // res.status(201).json({ 
-            //     message: 'user created', 
-            //     user: safeUser, 
-                // token,
-                // refreshToken
-            // })
-            else {
-                res.status(422)
-            }
+            res.status(200).send({
+                message: 'User registered succesfully',
+                userId: newUser.id,
+                username: newUser.email
+            });
+
         } catch(err) {
-            next(err);
+            console.log(err);
+            res.status(400).send('Registration failed!')
         }
     },
     
     login: async (req, res, next) => {
-        const { email, password, user_type } = req.body; 
-        const validationResult = loginSchema.validate(req.body)
-    
-        if (user_type !== 'doctor' && user_type !== 'patient') {
-            return res.status(400).json({ error: 'Invalid user type' });
-        }
-    
-        if (validationResult.error) {
-            return res.status(400).json({ 
-                error: validationResult.error.details[0].message 
-            })
-        }
-    
+        console.log(req.body)
+
         try {
-            const user = await typeChecker(user_type, 'email', email)
-    
-            if (!user) {
-                return res.status(401).json({ 
-                    message: 'Invalid email' 
-                })
+            const { email, password, user_type } = req.body; 
+        
+            if (user_type !== 'doctor' && user_type !== 'patient') {
+                return res.status(400).json({ error: 'Invalid user type' });
             }
-    
-            if (!(await bcrypt.compare(password, user.password))) {
-                return res.status(401).json({ 
-                    message: 'Invalid password' 
-                })
+        
+            let foundUser = await typeChecker(user_type, 'email', email)
+
+            console.log(foundUser)
+        
+            if (!foundUser) {
+                return res.status(404).send('User not found')
             }
+
+            const isAuthenticated = bcrypt.compareSync(
+                password,
+                foundUser.password
+            )
+
+            console.log(isAuthenticated)
     
-            const refreshToken = crypto.randomBytes(64).toString('hex');
-            user.refreshToken = refreshToken;
-            await user.save();
+            if (isAuthenticated) {
+                const refreshToken = crypto.randomBytes(64).toString('hex');
+                foundUser.refreshToken = refreshToken;
+                await foundUser.save();
     
-            const token = jwt.sign({ id: user.id }, SECRET, {
-                expiresIn: '1h'
-            })
+                const token = jwt.sign({ id: foundUser.id }, SECRET, {
+                    expiresIn: '48h'
+                });
     
-            res.status(200).json({ 
-                message: 'Login successful', 
-                user, 
-                token,
-                refreshToken 
-            });
+                const exp = Date.now() + 1000 * 60 * 60 * 48;
+                const data = {
+                    username: foundUser.email,
+                    userId: foundUser.id,
+                    token: token,
+                    exp: exp,
+                };
+                console.log("data", data);
+                return res.status(200).send(data);
+            } else {
+                return res.status(403).send('Incorrect password!')
+            }
+
         } catch(err) {
-            next(err);
+            console.log(err);
+            return res.status(400).send('login failed')
         }
     },
     
