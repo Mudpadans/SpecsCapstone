@@ -6,21 +6,27 @@ const Joi = require('joi')
 
 const {Patient} = require('../models/patient');
 const {Doctor} = require('../models/doctor');
-const SECRET = process.env.SECRET;
+const {SECRET} = process.env;
 
-const loginSchema = Joi.object({
-    email: Joi.string().email().required(), 
-    password: Joi.string().min(8).required(), 
-})
+// const loginSchema = Joi.object({
+//     email: Joi.string().email().required(), 
+//     password: Joi.string().min(8).required(), 
+// })
+
 
 const typeChecker = async (user_type, parameter, value) => {
-    let query = { [parameter]: value }
-    if (user_type === 'doctor') {
-        return await Doctor.findOne(query);
-    } else if (user_type === 'patient') {
-        return await Patient.findOne(query);
+    let query = { where: { [parameter]: value } };
+    try {
+        if (user_type === 'doctor') {
+            return await Doctor.findOne(query);
+        } else if (user_type === 'patient') {
+            return await Patient.findOne(query);
+        }
+    } catch (error) {
+        console.error("Error fetching user:", error);
     }
 }
+    
 
 module.exports = {
     signup: async (req, res) => {
@@ -35,7 +41,7 @@ module.exports = {
                 last_name: lastName,
                 phone_number: phoneNumber,
                 dob: birthDate,
-                medicalHistory,
+                medical_history: medicalHistory,
                 credentials,
                 specializations
             } = req.body
@@ -59,7 +65,7 @@ module.exports = {
                     last_name: lastName,
                     phone_number: phoneNumber,
                     dob: birthDate,
-                    medicalHistory,
+                    medical_history: medicalHistory,
                 });
             } else if (user_type === 'doctor') {
                 newUser = await Doctor.create({
@@ -89,7 +95,7 @@ module.exports = {
         }
     },
     
-    login: async (req, res, next) => {
+    login: async (req, res) => {
         console.log(req.body)
 
         try {
@@ -112,28 +118,31 @@ module.exports = {
                 foundUser.password
             )
 
-            console.log(isAuthenticated)
+            // console.log(isAuthenticated)
+            // console.log("Input Password:", password)
+            // console.log('Stored hashed password:', foundUser.password)
     
             if (isAuthenticated) {
+                const token = jwt.sign({ id: foundUser.id }, SECRET, {
+                    expiresIn: '1h'
+                });
+
                 const refreshToken = crypto.randomBytes(64).toString('hex');
                 foundUser.refreshToken = refreshToken;
                 await foundUser.save();
-    
-                const token = jwt.sign({ id: foundUser.id }, SECRET, {
-                    expiresIn: '48h'
-                });
     
                 const exp = Date.now() + 1000 * 60 * 60 * 48;
                 const data = {
                     username: foundUser.email,
                     userId: foundUser.id,
                     token: token,
+                    refreshToken: refreshToken,
                     exp: exp,
                 };
-                console.log("data", data);
+                // console.log("data", data);
                 return res.status(200).send(data);
             } else {
-                return res.status(403).send('Incorrect password!')
+                return res.status(403).send('Incorrect credentials!');
             }
 
         } catch(err) {
