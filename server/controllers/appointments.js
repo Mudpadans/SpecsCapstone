@@ -1,33 +1,13 @@
 const express = require('express');
-const router = express.Router();
-const Joi = require('joi');
 
-const {Sequelize} = require('sequelize')
-const {CONNECTION_STRING} = process.env
-
-const sequelize = new Sequelize(CONNECTION_STRING, {
-    dialect: 'postgres', 
-    logging: false,
-  });
+const {sequelize} = require('../database');
 
 const Appointment = require('../models/appointment');
 const isAuthenticated = require('../middleware/isAuthenticated');
 
-const appointmentValidation = (data) => {
-    const schema = Joi.object({
-        patientId: Joi.string().required(),
-        doctorId: Joi.string().required(),
-        appointmentDate: Joi.date().required(),
-        status: Joi.string().required(),
-        appointmentType: Joi.string().required(),
-        appointmentText: Joi.string().required()
-    })
-    return schema.validate(data);
-}
-
-const errorHandler = (res, err, statusCode = 500) => {
-    res.status(statusCode).json({ error: err.message })
-}
+// const errorHandler = (res, err, statusCode = 500) => {
+//     res.status(statusCode).json({ error: err.message })
+// }
 
 const getPaginationOptions = (req) => {
     const page = parseInt(req.query.page) || 1;
@@ -45,35 +25,33 @@ const getPaginationOptions = (req) => {
 
 module.exports = {
     createAppointment: [isAuthenticated, async (req, res) => {
-        const { error } = appointmentValidation(req.body);
-        if (error) return res.status(400).send(error.details[0].message)
-    
-        const { 
-            patientId, 
-            doctorId, 
-            appointmentDate, 
-            status, 
-            appointmentType,
-            appointmentText
-        } = req.body;
-    
-        const newAppointment = new Appointment({
-            patientId,
-            doctorId,
-            appointmentDate,
-            status,
-            appointmentType,
-            appointmentText
-        });
-    
         try {
-            await newAppointment.save();
-            res.status(201).json({
-                message: 'Appointment created',
-                appointment: newAppointment,
+            const { 
+                patient_id: patientId, 
+                doctor_id: doctorId, 
+                appointment_date: appointmentDate, 
+                status, 
+                appointment_type: appointmentType,
+                appointment_text: appointmentText
+            } = req.body;
+
+           const newAppointment = await Appointment.create({
+                patient_id: patientId, 
+                doctor_id: doctorId, 
+                appointment_date: appointmentDate, 
+                status, 
+                appointment_type: appointmentType,
+                appointment_text: appointmentText
             })
-        } catch(err) {
-            errorHandler(res, err)
+
+            res.status(201).json({
+                message: 'Appointment created successfully',
+                appointment: newAppointment
+            });
+        } 
+        catch(err) {
+            console.log(err, 'ERROR IN createAppointment');
+            res.status(400).send(err);
         }
     }],
     

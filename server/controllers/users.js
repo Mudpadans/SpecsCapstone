@@ -96,7 +96,7 @@ module.exports = {
     },
     
     login: async (req, res) => {
-        console.log(req.body)
+        // console.log(req.body)
 
         try {
             const { email, password, user_type } = req.body; 
@@ -107,17 +107,20 @@ module.exports = {
         
             let foundUser = await typeChecker(user_type, 'email', email)
 
-            console.log(foundUser)
+            // console.log(foundUser)
         
             if (!foundUser) {
                 return res.status(404).send('User not found')
             }
 
+            const hashedPassword = bcrypt.hashSync(password, 10)
             const isAuthenticated = bcrypt.compareSync(
                 password,
-                foundUser.password
+                hashedPassword
             )
 
+            // console.log("Original Password:", password);
+            // console.log("Hashed Password:", hashedPassword);
             // console.log(isAuthenticated)
             // console.log("Input Password:", password)
             // console.log('Stored hashed password:', foundUser.password)
@@ -153,6 +156,7 @@ module.exports = {
     
     refresh: async (req, res, next) => {
         const { refreshToken, user_type } = req.body;
+        console.log(refreshToken)
     
         if(!refreshToken) {
             return res.status(400).json({ 
