@@ -3,8 +3,13 @@
     background-color: #f7f9fc;
 }
 
-.contact-page h1, .contact-page h2 {
+.contact-page h1 {
     color: #2c3e50;
+    margin-bottom: 20px;
+}
+
+.contact-page h2 {
+    color: #B3C4D6;
     margin-bottom: 20px;
 }
 
@@ -17,5 +22,10 @@
 
 .contact-details {
     background-color: #fff;
-    
+    border: 1px solid #e0e0e0;
+    padding: 20px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+
