@@ -27,21 +27,21 @@ module.exports = {
     createAppointment: [isAuthenticated, async (req, res) => {
         try {
             const { 
-                patient_id: patientId, 
-                doctor_id: doctorId, 
-                appointment_date: appointmentDate, 
+                patient_id, 
+                doctor_id, 
+                appointment_date, 
                 status, 
-                appointment_type: appointmentType,
-                appointment_text: appointmentText
+                appointment_type,
+                appointment_text
             } = req.body;
 
            const newAppointment = await Appointment.create({
-                patient_id: patientId, 
-                doctor_id: doctorId, 
-                appointment_date: appointmentDate, 
+                patient_id, 
+                doctor_id, 
+                appointment_date, 
                 status, 
-                appointment_type: appointmentType,
-                appointment_text: appointmentText
+                appointment_type,
+                appointment_text
             })
 
             res.status(201).json({
@@ -64,7 +64,7 @@ module.exports = {
         }
     
         if (req.query.appointmentType) {
-            query.appointmentType = req.query.appointmentType;
+            query.appointmen_type = req.query.appointment_type;
         }
     
         try {

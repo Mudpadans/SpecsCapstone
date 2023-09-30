@@ -5,9 +5,6 @@ const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 4000;
 const {sequelize} = require('./database')
-
- 
-    console.log('Database connected')
   
     const Patient = require('./models/patient'); 
     const Doctor = require('./models/doctor');

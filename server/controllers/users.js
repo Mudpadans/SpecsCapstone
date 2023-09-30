@@ -37,11 +37,11 @@ module.exports = {
                 user_type,
                 email,
                 password,
-                first_name: firstName,
-                last_name: lastName,
-                phone_number: phoneNumber,
-                dob: birthDate,
-                medical_history: medicalHistory,
+                first_name,
+                last_name,
+                phone_number,
+                dob,
+                medical_history,
                 credentials,
                 specializations
             } = req.body
@@ -61,21 +61,21 @@ module.exports = {
                     user_type,
                     email,
                     password: hashedPassword,
-                    first_name: firstName,
-                    last_name: lastName,
-                    phone_number: phoneNumber,
-                    dob: birthDate,
-                    medical_history: medicalHistory,
+                    first_name,
+                    last_name,
+                    phone_number,
+                    dob,
+                    medical_history,
                 });
             } else if (user_type === 'doctor') {
                 newUser = await Doctor.create({
                     user_type,
                     email,
                     password: hashedPassword,
-                    first_name: firstName,
-                    last_name: lastName,
-                    phone_number: phoneNumber,
-                    dob: birthDate,
+                    first_name,
+                    last_name,
+                    phone_number,
+                    dob,
                     credentials,
                     specializations,
                 });
@@ -142,7 +142,7 @@ module.exports = {
                     refreshToken: refreshToken,
                     exp: exp,
                 };
-                // console.log("data", data);
+                console.log("data", data);
                 return res.status(200).send(data);
             } else {
                 return res.status(403).send('Incorrect credentials!');

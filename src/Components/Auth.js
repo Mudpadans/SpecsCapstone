@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { storage } from '../localStorageUtil';
 
 const Auth = () => {
     const [isSignup, setIsSignup] = useState(true);
@@ -7,12 +8,21 @@ const Auth = () => {
         user_type: '',
         email: '',
         password: '',
-        firstName: '',
-        lastName: '',
-        birthDate: '',
-        phoneNumber: '',
-        medicalHistory: ''
+        first_name: '',
+        last_name: '',
+        dob: '',
+        phone_number: '',
+        medical_history: '',
+        credentials: '',
+        specializations: ''
     })
+
+    const token = storage.getItem('token');
+
+    if (res.data.token) {
+        storage.setItem('token', res.data.token)
+        storage.setItem('user', res.data.user)
+    }
 
     const changeHandler = (event) => {
         const { name, value } = event.target;
@@ -24,24 +34,33 @@ const Auth = () => {
 
     const submitHandler = async (event) => {
         event.preventDefault();
-        try {
-            let res;
+        const url = isSignup ? 'http://localhost:4600/signup' : 'http://localhost:4600/login'
 
-            if (isSignup) {
-                res = await axios.post('/signup', formData);
-            } else {
-                res = await axios.post('/login', formData);
-            }
+        try {
+            const res = await axios.post(url, formData)
             console.log(res.data)
         } catch (err) {
             console.error("Error during Authentication:", err)
-            res.sendStatus(500)
+            console.error("Error Details:", err.response);
         }
+    }
+
+    const toggleIsSignup = () => {
+        setIsSignup(!isSignup)
+        setFormData({
+            ...formData,
+            user_type: ''
+        })
+    }
+
+    const logoutHandler = () => {
+        storage.removeItem('token');
+        storage.removeItem('user');
     }
 
     return (
         <div className="auth-page">
-            <h1>{isSignup ? 'Signup' : 'login'}</h1>
+            <h1>{isSignup ? 'Signup' : 'Login'}</h1>
             <form onSubmit={submitHandler}>
                 <div className="user-type-buttons">
                     <label>
@@ -79,44 +98,72 @@ const Auth = () => {
                     onChange={changeHandler}
                     placeholder="Password"
                 />
-                <input 
-                    type="text"
-                    name="first_name"
-                    value={formData.firstName}
-                    onChange={changeHandler}
-                    placeholder="First Name"
-                />
-                <input 
-                    type="text"
-                    name="last_name"
-                    value={formData.lastName}
-                    onChange={changeHandler}
-                    placeholder="Last Name"
-                />
-                <input 
-                    type="date"
-                    name="dob"
-                    value={formData.birthDate}
-                    onChange={changeHandler}
-                    placeholder="Birth Date"
-                />
-                <input 
-                    type="text"
-                    name="phone_number"
-                    value={formData.phoneNumber}
-                    onChange={changeHandler}
-                    placeholder="Phone Number"
-                />
-                <input 
-                    type="text"
-                    name="medical_history"
-                    value={formData.medicalHistory}
-                    onChange={changeHandler}
-                    placeholder="Medical History"
-                />
+                {isSignup && (
+                    <>
+                        <input 
+                            type="text"
+                            name="first_name"
+                            value={formData.first_name}
+                            onChange={changeHandler}
+                            placeholder="First Name"
+                        />
+                        <input 
+                            type="text"
+                            name="last_name"
+                            value={formData.last_name}
+                            onChange={changeHandler}
+                            placeholder="Last Name"
+                        />
+                        <input 
+                            type="date"
+                            name="dob"
+                            value={formData.dob}
+                            onChange={changeHandler}
+                            placeholder="Birth Date"
+                        />
+                        <input 
+                            type="text"
+                            name="phone_number"
+                            value={formData.phone_number}
+                            onChange={changeHandler}
+                            placeholder="Phone Number"
+                        />
+                    </>
+                )}
+                
+                
+                {isSignup && formData.user_type === "patient" && (
+                    <input 
+                        type="text"
+                        name="medical_history"
+                        value={formData.medical_history}
+                        onChange={changeHandler}
+                        placeholder="Medical History"
+                    />
+                )}
+
+                {isSignup && formData.user_type === "doctor" && (
+                    <>
+                        <input 
+                            type="text"
+                            name="credentials"
+                            value={formData.credentials}
+                            onChange={changeHandler}
+                            placeholder="Credentials"
+                        />
+                        <input 
+                            type="text"
+                            name="specializations"
+                            value={formData.specializations}
+                            onChange={changeHandler}
+                            placeholder="Specializations"
+                        />
+                    </>
+                )}
+                
                 <button type="submit">{isSignup ? 'Signup' : 'Login'}</button>
             </form>
-            <button>
+            <button onClick={toggleIsSignup}>
                 {isSignup ? 'Already have an account? Login' : 'Don\'t have an account? Sign up'}
             </button>
         </div>
