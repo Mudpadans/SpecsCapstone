@@ -16,13 +16,7 @@ const Auth = () => {
         credentials: '',
         specializations: ''
     })
-
-    const token = storage.getItem('token');
-
-    if (res.data.token) {
-        storage.setItem('token', res.data.token)
-        storage.setItem('user', res.data.user)
-    }
+    const [isLoggedIn, setIsLoggedIn] = useState(false)
 
     const changeHandler = (event) => {
         const { name, value } = event.target;
@@ -38,6 +32,14 @@ const Auth = () => {
 
         try {
             const res = await axios.post(url, formData)
+
+            if (res.data.token) {
+                storage.setItem('token', res.data.token)
+                storage.setItem('user', res.data.user)
+            }
+
+            setIsLoggedIn(true);
+            window.alert("You've successfully logged in!");
             console.log(res.data)
         } catch (err) {
             console.error("Error during Authentication:", err)
@@ -56,6 +58,8 @@ const Auth = () => {
     const logoutHandler = () => {
         storage.removeItem('token');
         storage.removeItem('user');
+        setIsLoggedIn(false);
+        window.alert("You've successfully logged out!");
     }
 
     return (
@@ -133,31 +137,28 @@ const Auth = () => {
                 
                 
                 {isSignup && formData.user_type === "patient" && (
-                    <input 
-                        type="text"
+                    <textarea 
                         name="medical_history"
                         value={formData.medical_history}
                         onChange={changeHandler}
                         placeholder="Medical History"
-                    />
+                    ></textarea>
                 )}
 
                 {isSignup && formData.user_type === "doctor" && (
                     <>
-                        <input 
-                            type="text"
+                        <textarea
                             name="credentials"
                             value={formData.credentials}
                             onChange={changeHandler}
                             placeholder="Credentials"
-                        />
-                        <input 
-                            type="text"
+                        ></textarea>
+                        <textarea
                             name="specializations"
                             value={formData.specializations}
                             onChange={changeHandler}
                             placeholder="Specializations"
-                        />
+                        ></textarea>
                     </>
                 )}
                 
@@ -166,6 +167,7 @@ const Auth = () => {
             <button onClick={toggleIsSignup}>
                 {isSignup ? 'Already have an account? Login' : 'Don\'t have an account? Sign up'}
             </button>
+            <button onClick={logoutHandler}>Logout</button>
         </div>
     )
 }

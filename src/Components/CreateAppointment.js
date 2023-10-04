@@ -1,8 +1,9 @@
 import React, { useContext, useState } from 'react';
 import axios from 'axios';
 import { UserContext } from '../createContext';
+import './CreateAppointment.css'
 
-const Appointment = () => {
+const CreateAppointment = () => {
     const { userId } = useContext(UserContext);
 
     const [formData, setFormData] = useState({
@@ -77,4 +78,4 @@ const Appointment = () => {
     )
 }
 
-export default Appointment;
+export default CreateAppointment;

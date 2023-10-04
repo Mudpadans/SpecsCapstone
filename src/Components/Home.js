@@ -4,7 +4,7 @@ const Section = ({ id, title, children}) => {
     return (
         <section id={id}>
             <h2>{title}</h2>
-            <p>{children}</p>
+            <div>{children}</div>
         </section>
     )
 }
