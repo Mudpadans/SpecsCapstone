@@ -1,13 +1,7 @@
 const express = require('express');
 
-const {sequelize} = require('../database');
-
-const Appointment = require('../models/appointment');
+const { Appointment } = require('../models/appointment');
 const isAuthenticated = require('../middleware/isAuthenticated');
-
-// const errorHandler = (res, err, statusCode = 500) => {
-//     res.status(statusCode).json({ error: err.message })
-// }
 
 const getPaginationOptions = (req) => {
     const page = parseInt(req.query.page) || 1;
@@ -42,6 +36,11 @@ module.exports = {
                 status, 
                 appointment_type,
                 appointment_text
+            }, {
+                include: [
+                    { model: User, as: 'Patient', attributes: ['first_name', 'last_name'] },
+                    { model: User, as: 'Doctor', attributes: ['first_name', 'last_name'] }
+                ]
             })
 
             res.status(201).json({
@@ -82,6 +81,34 @@ module.exports = {
             })
         } catch(err) {
             errorHandler(res, err)
+        }
+    }],
+
+    getPatientAppointments: [isAuthenticated, async (req, res) => {
+        try {
+            const patientId = req.params.patientId;
+
+            const patientAppointments = await Appointment.findAll({
+                where: { patient_id: patientId },
+                include: [
+                    { model: User, as: 'Patient', attributes: ['first_name', 'last_name'] },
+                    { model: User, as: 'Doctor', attributes: ['first_name', 'last_name'] }
+                ]
+            });
+
+            if (!patientAppointments || patientAppointments.length === 0) {
+                return res.status(404).json({
+                    message: 'No appointments found for this patient'
+                });
+            }
+
+            res.status(200).json({
+                message: 'Appointments fetched successfully',
+                appointments: patientAppointments
+            })
+        } catch (err) {
+            console.error("Error fetching patient's appointments:", err)
+            res.status(500).send(err)
         }
     }],
     

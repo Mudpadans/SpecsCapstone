@@ -1,16 +1,56 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 import { UserContext } from '../createContext';
 import './Appointments.css'
 
 const Appointments = () => {
-    const { userId } = useContext(UserContext);
+    const { userId, appointmentId } = useContext(UserContext);
+    const [appointments, setAppointments] = useState([]);
+    const [error, setError] = useState(null)
 
-    if (userId.user_type === "patient") {
+    useEffect(() => {
+        const fetchAppointments = async () => {
+            try {
+                let response;
 
-    } else if (userId.user_type === "doctor") {
+                if (userId.user_type === "patient") {
+                    response = await axios.get(`http://localhost:4600/patient/${userId.id}/appointments`);
+                } else if (userId.user_type === "doctor") {
+                    response = await axios.get('http://localhost:4600/getAppointments')
+                }
 
-    }
+                setAppointments(response.data)
+            } catch (error) {
+                console.error("Error fetching appointments:", error);
+                setError("There was an error getting the appointments.")
+            }
+        };
+
+        fetchAppointments();
+    }, [userId])
+    
+    return (
+        <div className="appointments-page">
+            <h1>Appointments</h1>
+            {error && <p className="error-message">{error}</p>}
+            <ul>
+                {appointments.map(appointment => (
+                    <li key={appointment.id}>
+                        <p>Patient: 
+                            {appointment.patient_id.first_name} 
+                            {` `}
+                            {appointment.patient_id.last_name} 
+                        </p>
+                        <p>Dr. {appointment.doctor_id.last_name}</p>
+                        <p>Date: {appointment.appointment_date}</p>
+                        <p>Type: {appointment.appointment_type}</p>
+                        <p>Notes: {appointment.appointment_text}</p>
+                        <p>Status: {appointment.status}</p>
+                    </li>
+                ))}
+            </ul>
+        </div>
+    )
 }
 
 export default Appointments;

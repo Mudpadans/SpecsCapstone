@@ -8,11 +8,6 @@ const {Patient} = require('../models/patient');
 const {Doctor} = require('../models/doctor');
 const {SECRET} = process.env;
 
-// const loginSchema = Joi.object({
-//     email: Joi.string().email().required(), 
-//     password: Joi.string().min(8).required(), 
-// })
-
 
 const typeChecker = async (user_type, parameter, value) => {
     let query = { where: { [parameter]: value } };
@@ -96,7 +91,6 @@ module.exports = {
     },
     
     login: async (req, res) => {
-        // console.log(req.body)
 
         try {
             const { email, password, user_type } = req.body; 
@@ -106,8 +100,6 @@ module.exports = {
             }
         
             let foundUser = await typeChecker(user_type, 'email', email)
-
-            // console.log(foundUser)
         
             if (!foundUser) {
                 return res.status(404).send('User not found')
@@ -118,12 +110,6 @@ module.exports = {
                 password,
                 hashedPassword
             )
-
-            // console.log("Original Password:", password);
-            // console.log("Hashed Password:", hashedPassword);
-            // console.log(isAuthenticated)
-            // console.log("Input Password:", password)
-            // console.log('Stored hashed password:', foundUser.password)
     
             if (isAuthenticated) {
                 const token = jwt.sign({ id: foundUser.id }, SECRET, {
