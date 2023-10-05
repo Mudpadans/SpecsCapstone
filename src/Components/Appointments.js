@@ -4,12 +4,14 @@ import { UserContext } from '../createContext';
 import './Appointments.css'
 
 const Appointments = () => {
-    const { userId, appointmentId } = useContext(UserContext);
+    const { userId } = useContext(UserContext);
     const [appointments, setAppointments] = useState([]);
     const [error, setError] = useState(null)
 
     useEffect(() => {
         const fetchAppointments = async () => {
+            if (!userId) return;
+
             try {
                 let response;
 

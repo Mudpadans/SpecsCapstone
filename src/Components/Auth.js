@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import { storage } from '../localStorageUtil';
+import { UserContext } from '../createContext';
+
 
 const Auth = () => {
     const [isSignup, setIsSignup] = useState(true);
@@ -16,7 +18,7 @@ const Auth = () => {
         credentials: '',
         specializations: ''
     })
-    const [isLoggedIn, setIsLoggedIn] = useState(false)
+    const { userId, setUserId } = useContext(UserContext)
 
     const changeHandler = (event) => {
         const { name, value } = event.target;
@@ -32,15 +34,19 @@ const Auth = () => {
 
         try {
             const res = await axios.post(url, formData)
+            let userId = res.data.userId
 
             if (res.data.token) {
                 storage.setItem('token', res.data.token)
-                storage.setItem('user', res.data.user)
             }
 
-            setIsLoggedIn(true);
-            window.alert("You've successfully logged in!");
-            console.log(res.data)
+            if (userId) {
+                setUserId(userId)
+                storage.setItem('userId', JSON.stringify(userId))
+                window.alert("You've successfully logged in!");
+                console.log(res.data.userId)
+            }
+            
         } catch (err) {
             console.error("Error during Authentication:", err)
             console.error("Error Details:", err.response);
@@ -48,7 +54,7 @@ const Auth = () => {
     }
 
     const toggleIsSignup = () => {
-        setIsSignup(!isSignup)
+        setIsSignup(!isSignup)  
         setFormData({
             ...formData,
             user_type: ''
@@ -57,8 +63,8 @@ const Auth = () => {
 
     const logoutHandler = () => {
         storage.removeItem('token');
-        storage.removeItem('user');
-        setIsLoggedIn(false);
+        storage.removeItem('userId');
+        setUserId(null);
         window.alert("You've successfully logged out!");
     }
 

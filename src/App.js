@@ -18,7 +18,7 @@ const App = () => {
     const [userId, setUserId] = useState(null);
 
     useEffect(() => {
-        const storedUserId = storage.getItem('userId');
+        const storedUserId = JSON.parse(storage.getItem('userId'));
         if (storedUserId) {
             setUserId(storedUserId);
         }
@@ -26,7 +26,7 @@ const App = () => {
 
     useEffect(() => {
         if (userId) {
-            storage.setItem('userId', userId);
+            storage.setItem('userId', JSON.stringify(userId));
         } else {
             storage.removeItem('userId')
         }
