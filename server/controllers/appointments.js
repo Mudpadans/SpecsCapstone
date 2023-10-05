@@ -19,6 +19,8 @@ const getPaginationOptions = (req) => {
 
 module.exports = {
     createAppointment: [isAuthenticated, async (req, res) => {
+        console.log('Received request data:', req.body);
+
         try {
             const { 
                 patient_id, 

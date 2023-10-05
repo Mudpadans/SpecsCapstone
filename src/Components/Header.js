@@ -6,14 +6,14 @@ import { storage } from '../localStorageUtil'
 const Header = () => {
     const { userId, setUserId } = useContext(UserContext);
 
-    console.log(userId);
-
     const logoutHandler = () => {
         storage.removeItem('token');
         storage.removeItem('user');
         setUserId(null);
         window.alert("You've successfully logged out!");
     }
+
+    // console.log('User type:', userId.user_type);
 
     return (
         <header className='header'>
@@ -29,7 +29,7 @@ const Header = () => {
                     }
                     <li><Link to="/appointments">Appointments</Link></li>
                     <li><Link to="/contact">Contact</Link></li>
-                    {doctor || patient 
+                    {userId 
                         ? <li><Link onClick={logoutHandler}>Logout</Link></li> 
                         : <li><Link to="/auth">Signup/Login</Link></li>
                     }       

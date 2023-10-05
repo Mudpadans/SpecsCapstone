@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react';
 import axios from 'axios';
 import { UserContext } from '../createContext';
 import './CreateAppointment.css'
+import { storage } from '../localStorageUtil';
 
 const CreateAppointment = () => {
     const { userId } = useContext(UserContext);
@@ -9,7 +10,7 @@ const CreateAppointment = () => {
     const [formData, setFormData] = useState({
         patient_id: '',
         doctor_id: '',
-        appoinment_date: '',
+        appointment_date: '',
         status: '',
         appointment_type: '',
         appointment_text: ''
@@ -24,7 +25,7 @@ const CreateAppointment = () => {
     }   
 
     const submitHandler = async (event) => {
-        event.preventDefault;
+        event.preventDefault();
 
         const appointmentData = {
             ...formData,
@@ -32,7 +33,16 @@ const CreateAppointment = () => {
         }
 
         try {
-            const res = await axios.post('http://localhost:4600/createAppointment', appointmentData);
+            console.log('Sending the following data:', appointmentData);
+            const token = storage.getItem('token')
+            const res = await axios.post(
+                'http://localhost:4600/createAppointment', 
+                appointmentData, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                }
+            );
             console.log(res.data.message)
         } catch (err) {
             console.error("Error creating appointment", err)
@@ -46,8 +56,9 @@ const CreateAppointment = () => {
                 <input 
                     type="date"
                     name="appointment_date"
-                    value={formData.appoinment_date}
+                    value={formData.appointment_date}
                     onChange={changeHandler}
+                    placeholder='Appointment Date'
                 />
                 <select
                     name="status"

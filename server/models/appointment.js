@@ -12,7 +12,10 @@ const Appointment = sequelize.define('Appointment', {
         primaryKey: true
     },
     patient_id: DataTypes.UUID,
-    doctor_id: DataTypes.UUID,
+    doctor_id: {
+        type: DataTypes.UUID,
+        allowNull: true
+    },
     appointment_date: DataTypes.DATE,
     status: {
         type: DataTypes.ENUM(

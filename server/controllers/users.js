@@ -2,7 +2,6 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs')
 const crypto = require('crypto');
-const Joi = require('joi')
 
 const {Patient} = require('../models/patient');
 const {Doctor} = require('../models/doctor');
@@ -81,8 +80,10 @@ module.exports = {
             res.status(200).send({
                 message: 'User registered succesfully',
                 userId: newUser.id,
-                username: newUser.email
+                username: newUser.email,
+                user_type: newUser.user_type
             });
+            console.log(data)
 
         } catch(err) {
             console.log(err);
@@ -124,11 +125,12 @@ module.exports = {
                 const data = {
                     username: foundUser.email,
                     userId: foundUser.id,
+                    user_type: foundUser.user_type,
                     token: token,
                     refreshToken: refreshToken,
                     exp: exp,
                 };
-                console.log("data", data);
+                console.log("Found user: ", foundUser.dataValues);
                 return res.status(200).send(data);
             } else {
                 return res.status(403).send('Incorrect credentials!');

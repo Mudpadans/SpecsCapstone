@@ -34,17 +34,22 @@ const Auth = () => {
 
         try {
             const res = await axios.post(url, formData)
-            let userId = res.data.userId
 
             if (res.data.token) {
                 storage.setItem('token', res.data.token)
             }
 
-            if (userId) {
-                setUserId(userId)
+            if (res.data.userId) {
+                const user = {
+                    id: res.data.userId,
+                    user_type: res.data.user_type
+                }
+                setUserId(user)
                 storage.setItem('userId', JSON.stringify(userId))
                 window.alert("You've successfully logged in!");
-                console.log(res.data.userId)
+                console.log(res.data)
+                console.log('Setting user_type:', res.data.user_type);
+                console.log('User type:', user.user_type);
             }
             
         } catch (err) {
