@@ -14,22 +14,12 @@ module.exports = {
         first_name: DataTypes.STRING, 
         last_name: DataTypes.STRING, 
         email: DataTypes.STRING,
-        password: DataTypes.STRING,
+        password: DataTypes.TEXT,
         phone_number: DataTypes.BIGINT,
         dob: DataTypes.DATE,
         credentials: DataTypes.STRING,
         specializations: DataTypes.STRING,
     }, {
-        hooks: {
-            beforeCreate: async (patient) => {
-                patient.password = await bcrypt.hash(patient.password, 10);
-            },
-            beforeUpdate: async (patient) => {
-                if (patient.changed('password')) {
-                    patient.password = await bcrypt.hash(patient.password, 10);
-                }
-            }
-        },
         sequelize,
         modelName: 'Doctor',
         timestamps: true,

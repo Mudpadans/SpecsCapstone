@@ -60,16 +60,6 @@ const CreateAppointment = () => {
                     onChange={changeHandler}
                     placeholder='Appointment Date'
                 />
-                <select
-                    name="status"
-                    value={formData.status}
-                    onChange={changeHandler}
-                >
-                    <option value="Pending">Pending</option>
-                    <option value="Confirmed">Confirmed</option>
-                    <option value="Canceled">Canceled</option>
-                    <option value="Completed">Completed</option>
-                </select>
                 <input 
                     type="text"
                     name="appointment_type"

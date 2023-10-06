@@ -2,6 +2,8 @@
 const express = require('express');
 
 const { Appointment } = require('../models/appointment');
+const { Doctor } = require('../models/doctor');
+const { Patient } = require('../models/patient')
 const isAuthenticated = require('../middleware/isAuthenticated');
 
 const getPaginationOptions = (req) => {
@@ -41,8 +43,8 @@ module.exports = {
                 appointment_text
             }, {
                 include: [
-                    { model: User, as: 'Patient', attributes: ['first_name', 'last_name'] },
-                    { model: User, as: 'Doctor', attributes: ['first_name', 'last_name'] }
+                    { model: Patient, attributes: ['first_name', 'last_name'] },
+                    { model: Doctor, attributes: ['first_name', 'last_name'] }
                 ]
             })
 

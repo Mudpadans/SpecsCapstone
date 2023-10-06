@@ -7,21 +7,6 @@ const {Patient} = require('../models/patient');
 const {Doctor} = require('../models/doctor');
 const {SECRET} = process.env;
 
-
-const typeChecker = async (user_type, parameter, value) => {
-    let query = { where: { [parameter]: value } };
-    try {
-        if (user_type === 'doctor') {
-            return await Doctor.findOne(query);
-        } else if (user_type === 'patient') {
-            return await Patient.findOne(query);
-        }
-    } catch (error) {
-        console.error("Error fetching user:", error);
-    }
-}
-    
-
 module.exports = {
     signup: async (req, res) => {
         console.log('received request body:', req.body)
@@ -49,6 +34,7 @@ module.exports = {
 
             const salt = bcrypt.genSaltSync(10);
             const hash = bcrypt.hashSync(password, salt);
+
 
             let newUser;
     
@@ -94,15 +80,17 @@ module.exports = {
     },
     
     login: async (req, res) => {
-
         try {
-            const { email, password, user_type } = req.body; 
+            const { email, password } = req.body; 
         
-            if (user_type !== 'doctor' && user_type !== 'patient') {
-                return res.status(400).json({ error: 'Invalid user type' });
+            let foundUser = await Doctor.findOne({ where: { email }})
+            let userType = 'doctor';
+
+            if (!foundUser) {
+                foundUser = await Patient.findOne({ where: { email }})
+                userType = 'patient'
             }
-        
-            let foundUser = await typeChecker(user_type, 'email', email)
+
             console.log('User found:', foundUser ? 'Yes' : 'No');
         
             if (!foundUser) {
@@ -111,30 +99,28 @@ module.exports = {
 
             const isAuthenticated = bcrypt.compareSync(
                 password,
-                foundUser[0].password
+                foundUser.password,
             )
+
             console.log('Password matches:', isAuthenticated ? 'Yes' : 'No');
     
             if (isAuthenticated) {
-                const token = jwt.sign({ id: foundUser.id }, SECRET, {
-                    expiresIn: '1d'
-                });
-
-                // const refreshToken = crypto.randomBytes(64).toString('hex');
-                // foundUser.refreshToken = refreshToken;
-                // await foundUser.save();
+                const token = jwt.sign(
+                    { id: foundUser.id }, 
+                    SECRET, 
+                    { expiresIn: '1d' }
+                );
     
-                const exp = Date.now() + 1000 * 60 * 60 * 48;
+                const exp = Date.now() + 1000 * 60 * 60 * 24;
 
                 const data = {
                     username: foundUser.email,
                     userId: foundUser.id,
-                    user_type: foundUser.user_type,
+                    user_type: userType,
                     token: token,
-                    // refreshToken: refreshToken,
                     exp: exp,
                 };
-                console.log("Found user: ", foundUser.dataValues);
+                console.log("Found user: ", foundUser);
                 return res.status(200).send(data);
             } else {
                 return res.status(403).send('Incorrect credentials!');
