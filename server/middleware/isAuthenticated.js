@@ -20,6 +20,7 @@ const isAuthenticated = (req, res, next) => {
 
     jwt.verify(token, SECRET, (err, decoded) => {
         if(err) {
+            console.log("JWT Verification Error:", err);
             return res.status(401).json({ message: 'Invalid token', error: err.message });
         }
 

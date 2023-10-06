@@ -5,10 +5,6 @@ const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 4000;
 const {sequelize} = require('./database')
-  
-const Patient = require('./models/patient'); 
-const Doctor = require('./models/doctor');
-const Appointment = require('./models/appointment');
 
 app.use(express.json());
 app.use(cors());
@@ -20,7 +16,7 @@ const appointmentController = require('./controllers/appointments');
 
 app.post('/signup', userController.signup);
 app.post('/login', userController.login);
-app.post('/refresh', userController.refresh);
+// app.post('/refresh', userController.refresh);
 
 app.post('/createAppointment', isAuthenticated, appointmentController.createAppointment);
 app.get('/getAppointments', appointmentController.getAppointments);

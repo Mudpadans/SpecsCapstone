@@ -77,28 +77,7 @@ const Auth = () => {
         <div className="auth-page">
             <h1>{isSignup ? 'Signup' : 'Login'}</h1>
             <form onSubmit={submitHandler}>
-                <div className="user-type-buttons">
-                    <label>
-                        <input 
-                            type="radio"
-                            name="user_type"
-                            value="patient"
-                            checked={formData.user_type === 'patient'}
-                            onChange={changeHandler}
-                        />
-                        Patient
-                    </label>
-                    <label>
-                        <input 
-                            type="radio"
-                            name="user_type"
-                            value="doctor"
-                            checked={formData.user_type === 'doctor'}
-                            onChange={changeHandler}
-                        />
-                        Doctor
-                    </label>
-                </div>
+                
                 <input 
                     type="email"
                     name="email"
@@ -114,7 +93,29 @@ const Auth = () => {
                     placeholder="Password"
                 />
                 {isSignup && (
-                    <>
+                    <div>
+                        <div className="user-type-buttons">
+                        <label>
+                            <input 
+                                type="radio"
+                                name="user_type"
+                                value="patient"
+                                checked={formData.user_type === 'patient'}
+                                onChange={changeHandler}
+                            />
+                            Patient
+                        </label>
+                        <label>
+                            <input 
+                                type="radio"
+                                name="user_type"
+                                value="doctor"
+                                checked={formData.user_type === 'doctor'}
+                                onChange={changeHandler}
+                            />
+                            Doctor
+                        </label>
+                        </div>
                         <input 
                             type="text"
                             name="first_name"
@@ -143,7 +144,7 @@ const Auth = () => {
                             onChange={changeHandler}
                             placeholder="Phone Number"
                         />
-                    </>
+                    </div>
                 )}
                 
                 
