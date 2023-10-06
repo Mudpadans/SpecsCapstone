@@ -13,8 +13,6 @@ const Header = () => {
         window.alert("You've successfully logged out!");
     }
 
-    // console.log('User type:', userId.user_type);
-
     return (
         <header className='header'>
             <h1>GeneralCareClinic</h1>

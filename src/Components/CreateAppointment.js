@@ -29,20 +29,20 @@ const CreateAppointment = () => {
 
         const appointmentData = {
             ...formData,
-            patient_id: userId
+            patient_id: userId.id
         }
 
         try {
             console.log('Sending the following data:', appointmentData);
             const token = storage.getItem('token')
+            console.log(token)
             const res = await axios.post(
                 'http://localhost:4600/createAppointment', 
                 appointmentData, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
-                }
-            );
+                });
             console.log(res.data.message)
         } catch (err) {
             console.error("Error creating appointment", err)
