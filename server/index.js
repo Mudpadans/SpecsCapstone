@@ -19,11 +19,11 @@ app.post('/login', userController.login);
 // app.post('/refresh', userController.refresh);
 
 app.post('/createAppointment', isAuthenticated, appointmentController.createAppointment);
-app.get('/getAppointments', appointmentController.getAppointments);
-app.get('/patient/:patientId/appointments', appointmentController.getPatientAppointments);
-app.get('/getDetails/:appointment_id', appointmentController.getDetails);
-app.put('/updateAppointment/:appointment_id', appointmentController.updateAppointment);
-app.delete('/deleteAppointment/:appointment_id', appointmentController.deleteAppointment);
+app.get('/getAppointments', isAuthenticated, appointmentController.getAppointments);
+app.get('/patient/:patientId/appointments', isAuthenticated, appointmentController.getPatientAppointments);
+app.get('/getDetails/:appointment_id', isAuthenticated, appointmentController.getDetails);
+app.put('/updateAppointment/:appointment_id', isAuthenticated, appointmentController.updateAppointment);
+app.delete('/deleteAppointment/:appointment_id', isAuthenticated, appointmentController.deleteAppointment);
 
 sequelize.sync()
 .then(() => {

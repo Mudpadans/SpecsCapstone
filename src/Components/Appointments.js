@@ -13,12 +13,21 @@ const Appointments = () => {
             if (!userId) return;
 
             try {
+                const token = localStorage.getItem('token')
                 let response;
 
                 if (userId.user_type === "patient") {
-                    response = await axios.get(`http://localhost:4600/patient/${userId.id}/appointments`);
+                    response = await axios.get(`http://localhost:4600/patient/${userId.id}/appointments`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
                 } else if (userId.user_type === "doctor") {
-                    response = await axios.get('http://localhost:4600/getAppointments')
+                    response = await axios.get('http://localhost:4600/getAppointments', {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    })
                 }
 
                 setAppointments(response.data)

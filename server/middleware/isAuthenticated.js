@@ -18,6 +18,8 @@ const isAuthenticated = (req, res, next) => {
         return res.status(403).json({ message: 'Token is required' });
     }
 
+    console.log("SECRET: ", SECRET)
+
     jwt.verify(token, SECRET, (err, decoded) => {
         if(err) {
             console.log("JWT Verification Error:", err);

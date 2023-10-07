@@ -1,8 +1,6 @@
 
 const { DataTypes } = require('sequelize')
 const { sequelize } = require('../database')
-const { Doctor } = require('./doctor')
-const { Patient } = require('./patient')
 
 const Appointment = sequelize.define('Appointment', {
     id: {
@@ -11,9 +9,9 @@ const Appointment = sequelize.define('Appointment', {
         allowNull: false,
         primaryKey: true
     },
-    patient_id: DataTypes.UUID,
+    patient_id: DataTypes.INTEGER,
     doctor_id: {
-        type: DataTypes.UUID,
+        type: DataTypes.INTEGER,
         allowNull: true
     },
     appointment_date: DataTypes.DATE,
@@ -32,11 +30,7 @@ const Appointment = sequelize.define('Appointment', {
     sequelize,
     modelName: 'Appointment',
     timestamps: true,
+    underscored: true
     })
 
-Appointment.belongsTo(Patient, { as: 'Patient', foreignKey: 'patient_id' });
-Appointment.belongsTo(Doctor, { as: 'Doctor', foreignKey: 'doctor_id' });
-
-module.exports = {
-    Appointment: Appointment
-}
+module.exports = Appointment;

@@ -1,9 +1,9 @@
 
 const express = require('express');
 
-const { Appointment } = require('../models/appointment');
-const { Doctor } = require('../models/doctor');
-const { Patient } = require('../models/patient')
+const { Appointment } = require('../models/models');
+const { Doctor } = require('../models/models');
+const { Patient } = require('../models/models')
 const isAuthenticated = require('../middleware/isAuthenticated');
 
 const getPaginationOptions = (req) => {
@@ -96,8 +96,8 @@ module.exports = {
             const patientAppointments = await Appointment.findAll({
                 where: { patient_id: patientId },
                 include: [
-                    { model: User, as: 'Patient', attributes: ['first_name', 'last_name'] },
-                    { model: User, as: 'Doctor', attributes: ['first_name', 'last_name'] }
+                    { model: Patient, attributes: ['first_name', 'last_name'] },
+                    { model: Doctor, attributes: ['first_name', 'last_name'] }
                 ]
             });
 

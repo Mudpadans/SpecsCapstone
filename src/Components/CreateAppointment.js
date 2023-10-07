@@ -27,9 +27,26 @@ const CreateAppointment = () => {
     const submitHandler = async (event) => {
         event.preventDefault();
 
+        let {
+            patient_id, 
+            doctor_id,
+            appointment_date,
+            status,
+            appointment_type,
+            appointment_text
+        } = formData
+
+        if (doctor_id === '') {
+            doctor_id = null;
+        }
+
         const appointmentData = {
-            ...formData,
-            patient_id: userId.id
+            patient_id: userId.id,
+            doctor_id,
+            appointment_date,
+            status: "Pending",
+            appointment_type, 
+            appointment_text
         }
 
         try {

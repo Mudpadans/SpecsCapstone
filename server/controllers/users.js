@@ -1,10 +1,9 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs')
-const crypto = require('crypto');
 
-const {Patient} = require('../models/patient');
-const {Doctor} = require('../models/doctor');
+const {Patient} = require('../models/models');
+const {Doctor} = require('../models/models');
 const {SECRET} = process.env;
 
 module.exports = {
@@ -103,6 +102,7 @@ module.exports = {
             )
 
             console.log('Password matches:', isAuthenticated ? 'Yes' : 'No');
+            console.log("secret: ", SECRET)
     
             if (isAuthenticated) {
                 const token = jwt.sign(
