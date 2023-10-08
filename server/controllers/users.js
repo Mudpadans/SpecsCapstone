@@ -110,6 +110,16 @@ module.exports = {
                     SECRET, 
                     { expiresIn: '1d' }
                 );
+
+                jwt.verify(token, SECRET, (err, decoded) => {
+                    if (err) {
+                        console.log("Immediate verification error:", err);
+                    } else {
+                        console.log("Immediate verification successful:", decoded);
+                        console.log(token)
+                    }
+                });
+                
     
                 const exp = Date.now() + 1000 * 60 * 60 * 24;
 

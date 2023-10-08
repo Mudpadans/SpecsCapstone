@@ -39,13 +39,15 @@ const Auth = () => {
                 storage.setItem('token', res.data.token)
             }
 
+            console.log(res.data.token)
+
             if (res.data.userId) {
                 const user = {
                     id: res.data.userId,
                     user_type: res.data.user_type
                 }
                 setUserId(user)
-                storage.setItem('userId', JSON.stringify(userId))
+                storage.setItem('userId', JSON.stringify(user))
                 window.alert("You've successfully logged in!");
             }
             
