@@ -1,18 +1,37 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Roboto', sans-serif;
     margin: 0; 
     padding: 0;
-    background-color: #f4f4f4;
+    background-color: #F1F6F9;
+    line-height: 1.6;
+}
+
+a {
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: #005fa3;
+}
+
+.App {
+    max-width: 1500px;
+    margin: 0 auto;
+    padding: 0 20px;
 }
 
 header {
-    background-color: navy;
+    background-color: #005999;
     color: white;
     text-align: center;
     padding: 1em 0;
 }
 
 nav ul {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
     padding: 0;
     margin: 0;
     text-align: center;
@@ -20,27 +39,99 @@ nav ul {
 
 nav ul li {
     display: inline;
-    margin-right: 20px;
+    margin: 0 20px;
 }
 
 nav ul li a {
     color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+nav ul li a:hover {
+    background: rgba(255,255,255,0.8);
 }
 
 section {
-    padding: 20px;
+    padding: 40px 0;
+    margin: 20px 0;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    text-align: center;
 }
 
 h2 {
-    background-color: #333;
-    color: #B3C4D6;
+    background-color: #008AB8;
+    color: white;
     margin: 0;
     padding: 10px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+#services ul {
+    display: grid;
+    list-style-type: none;
+    text-align: center;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 30px;
 }
 
 footer {
-    background-color: navy;
+    background-color: #005999;
     color: white;
     text-align: center;
     padding: 1em 0;
+}
+
+@media (max-width: 768px) {
+
+    nav ul {
+        flex-direction: column;
+    }
+
+    nav ul li {
+        margin: 10px 0;
+    }
+
+    nav ul li a {
+        font-size: 1.2em;
+    }
+
+    section {
+        padding: 60px 0;
+        margin: 30px 0;
+    }
+
+    h2 {
+        font-size: 1.5em;
+    }
+
+    footer {
+        padding: 1.5em 0;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px){
+
+    nav ul li {
+        margin: 0 15px;
+    }
+
+    nav ul li a {
+        font-size: 1.1em;
+    }
+
+    section {
+        padding: 50px 0;
+        margin: 25px 0;
+    }
+
+    h2 {
+        font-size: 1.4em;
+    }
+
+    footer {
+        padding: 1.3em 0;
+    }
 }
