@@ -7,12 +7,12 @@
 }
 
 .services-page h1 {
-    color: #2c3e50;
+    text-align: center;
     margin-bottom: 20px;
 }
 
 .services-page p {
-    color: #34495e;
+    text-align: center;
     font-size: 16px;
     line-height: 1.5;
     margin-bottom: 20px;
@@ -28,6 +28,7 @@
 }
 
 .service-card h2 {
-    color: #B3C4D6;
+    text-align: center;
+    color: #fff;
     margin-top: 0;
 }

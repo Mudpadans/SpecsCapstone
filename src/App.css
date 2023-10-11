@@ -63,6 +63,13 @@ section {
     height: 250px;
     width: 250px;
     border-radius: 50%;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0px 3px 15px rgba(0, 0, 0, 0.1);
+}
+
+.serviceImg:hover {
+    transform: scale(1.05);
+    box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.2)
 }
 
 h2 {

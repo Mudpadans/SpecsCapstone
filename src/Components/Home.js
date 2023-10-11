@@ -3,6 +3,9 @@ import React from 'react';
 import primaryCareImg from "../images/cdc-vt7iAyiwpf0-unsplash.jpg"
 import pediatricsImg from "../images/cdc-COV00lEV3fM-unsplash.jpg"
 import dermatologyImg from "../images/bermix-studio-yooU2TAGiSQ-unsplash.jpg"
+import gynecologyImg from "../images/volodymyr-hryshchenko-87ev1NvhDsU-unsplash.jpg"
+import cardiologyImg from "../images/towfiqu-barbhuiya-QsBfOwMoPNY-unsplash.jpg"
+import orthopedicsImg from "../images/tom-claes-CfdzNybONzc-unsplash.jpg"
 
 const Section = ({ id, title, children}) => {
     return (
@@ -48,9 +51,11 @@ const Home = () => {
                     </div>
                     <div>
                         <li>Gynecology</li>
+                        <img className="serviceImg" src={gynecologyImg} alt="Gynecology"/>
                     </div>
                     <div>
                         <li>Cardiology</li>
+                        <img className="serviceImg" src={cardiologyImg} alt="Cardiology"/>
                     </div>
                     <div>
                         <li>Dermatology</li>
@@ -58,6 +63,7 @@ const Home = () => {
                     </div>
                     <div>
                         <li>Orthopedics</li>
+                        <img className="serviceImg" src={orthopedicsImg} alt="Orthopedics"/>
                     </div> 
                 </ul>
             </Section>
