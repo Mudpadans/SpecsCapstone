@@ -6,19 +6,19 @@ const { Doctor } = require('../models/models');
 const { Patient } = require('../models/models')
 const isAuthenticated = require('../middleware/isAuthenticated');
 
-const getPaginationOptions = (req) => {
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
-    const skip = (page - 1) * limit;
+// const getPaginationOptions = (req) => {
+//     const page = parseInt(req.query.page) || 1;
+//     const limit = parseInt(req.query.limit) || 10;
+//     const skip = (page - 1) * limit;
     
-    let sort = {};
-    if (req.query.sortBy) {
-        const str = req.query.sortBy.split(',');
-        sort[str[0]] = str[1] === 'desc' ? -1 : 1;    
-    }
+//     let sort = {};
+//     if (req.query.sortBy) {
+//         const str = req.query.sortBy.split(',');
+//         sort[str[0]] = str[1] === 'desc' ? -1 : 1;    
+//     }
 
-    return { page, limit, skip, sort };
-}
+//     return { page, limit, skip, sort };
+// }
 
 module.exports = {
     createAppointment: [isAuthenticated, async (req, res) => {
@@ -60,22 +60,22 @@ module.exports = {
     }],
     
     getAppointments: [isAuthenticated, async (req, res) => {
-        const { page, limit, skip, sort } = getPaginationOptions(req);
+        // const { page, limit, skip, sort } = getPaginationOptions(req);
 
-        let query = {};
-        if (req.query.status) {
-            query.status = req.query.status;
-        }
+        // let query = {};
+        // if (req.query.status) {
+        //     query.status = req.query.status;
+        // }
     
-        if (req.query.appointmentType) {
-            query.appointmen_type = req.query.appointment_type;
-        }
+        // if (req.query.appointmentType) {
+        //     query.appointmen_type = req.query.appointment_type;
+        // }
     
         try {
             const allAppointments = await Appointment.find(query)
-                .skip(skip)
-                .limit(limit)
-                .sort(sort)
+                // .skip(skip)
+                // .limit(limit)
+                // .sort(sort)
     
             const total = await Appointment.countDocuments(query)
     
@@ -97,7 +97,7 @@ module.exports = {
                 where: { patient_id: patientId },
                 include: [
                     { model: Patient, attributes: ['first_name', 'last_name'] },
-                    { model: Doctor, attributes: ['first_name', 'last_name'] }
+                    // { model: Doctor, attributes: ['first_name', 'last_name'] }
                 ]
             });
 

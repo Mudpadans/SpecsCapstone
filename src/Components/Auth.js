@@ -3,6 +3,7 @@ import axios from 'axios';
 import { storage } from '../localStorageUtil';
 import { UserContext } from '../createContext';
 
+const PORT = process.env.PORT
 
 const Auth = () => {
     const [isSignup, setIsSignup] = useState(true);
@@ -30,7 +31,7 @@ const Auth = () => {
 
     const submitHandler = async (event) => {
         event.preventDefault();
-        const url = isSignup ? 'http://localhost:4600/signup' : 'http://localhost:4600/login'
+        const url = isSignup ? `http://localhost:4600/signup` : `http://localhost:4600/login`
 
         try {
             const res = await axios.post(url, formData)

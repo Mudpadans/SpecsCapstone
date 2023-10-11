@@ -3,6 +3,8 @@ import axios from 'axios';
 import { UserContext } from '../createContext';
 import './Appointments.css'
 
+const PORT = process.env.PORT
+
 const Appointments = () => {
     const { userId } = useContext(UserContext);
     const [appointments, setAppointments] = useState([]);
@@ -19,13 +21,13 @@ const Appointments = () => {
                 if (userId.user_type === "patient") {
                     response = await axios.get(`http://localhost:4600/patient/${userId.id}/appointments`, {
                         headers: {
-                            'Authorization': `Bearer ${token}`
+                            'authorization': token
                         }
                     });
                 } else if (userId.user_type === "doctor") {
-                    response = await axios.get('http://localhost:4600/getAppointments', {
+                    response = await axios.get(`http://localhost:4600/getAppointments`, {
                         headers: {
-                            'Authorization': `Bearer ${token}`
+                            'authorization': token
                         }
                     })
                 }

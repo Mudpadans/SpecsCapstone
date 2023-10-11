@@ -4,6 +4,8 @@ import { UserContext } from '../createContext';
 import './CreateAppointment.css'
 import { storage } from '../localStorageUtil';
 
+const PORT = process.env.PORT
+
 const CreateAppointment = () => {
     const { userId } = useContext(UserContext);
 
@@ -54,7 +56,7 @@ const CreateAppointment = () => {
             const token = storage.getItem('token')
             console.log(token)
             const res = await axios.post(
-                'http://localhost:4600/createAppointment', 
+                `http://localhost:4600/createAppointment`, 
                 appointmentData, {
                     headers: {
                         'Authorization': `Bearer ${token}`

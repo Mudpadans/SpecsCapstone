@@ -59,6 +59,12 @@ section {
     text-align: center;
 }
 
+.serviceImg {
+    height: 250px;
+    width: 250px;
+    border-radius: 50%;
+}
+
 h2 {
     background-color: #008AB8;
     color: white;
@@ -75,6 +81,7 @@ h2 {
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(2, 1fr);
     gap: 30px;
+    padding-right: 20px;
 }
 
 footer {

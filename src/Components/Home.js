@@ -1,5 +1,9 @@
 import React from 'react';
 
+import primaryCareImg from "../images/cdc-vt7iAyiwpf0-unsplash.jpg"
+import pediatricsImg from "../images/cdc-COV00lEV3fM-unsplash.jpg"
+import dermatologyImg from "../images/bermix-studio-yooU2TAGiSQ-unsplash.jpg"
+
 const Section = ({ id, title, children}) => {
     return (
         <section id={id}>
@@ -34,12 +38,27 @@ const Home = () => {
             </Section>
             <Section id="services" title="Our Services">
                 <ul>
-                    <li>Primary Care</li>
-                    <li>Pediatrics</li>
-                    <li>Gynecology</li>
-                    <li>Cardiology</li>
-                    <li>Dermatology</li>
-                    <li>Orthopedics</li>
+                    <div>
+                        <li>Primary Care</li>
+                        <img className="serviceImg" src={primaryCareImg} alt="Primary Care"/>
+                    </div>
+                    <div>
+                        <li>Pediatrics</li>
+                        <img className="serviceImg" src={pediatricsImg} alt="Pediatrics"/>
+                    </div>
+                    <div>
+                        <li>Gynecology</li>
+                    </div>
+                    <div>
+                        <li>Cardiology</li>
+                    </div>
+                    <div>
+                        <li>Dermatology</li>
+                        <img className="serviceImg" src={dermatologyImg} alt="Dermatology"/>
+                    </div>
+                    <div>
+                        <li>Orthopedics</li>
+                    </div> 
                 </ul>
             </Section>
         </React.Fragment>
