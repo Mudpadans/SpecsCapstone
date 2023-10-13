@@ -9,6 +9,8 @@
 .services-page h1 {
     text-align: center;
     margin-bottom: 20px;
+    color: #005999;
+    font-weight: 600;
 }
 
 .services-page p {

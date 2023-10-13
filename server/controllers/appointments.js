@@ -21,7 +21,7 @@ const isAuthenticated = require('../middleware/isAuthenticated');
 // }
 
 module.exports = {
-    createAppointment: [isAuthenticated, async (req, res) => {
+    createAppointment: async (req, res) => {
         console.log('Received request data:', req.body);
 
         try {
@@ -57,9 +57,9 @@ module.exports = {
             console.log(err, 'ERROR IN createAppointment');
             res.status(400).send(err);
         }
-    }],
+    },
     
-    getAppointments: [isAuthenticated, async (req, res) => {
+    getAppointments: async (req, res) => {
         // const { page, limit, skip, sort } = getPaginationOptions(req);
 
         // let query = {};
@@ -87,9 +87,9 @@ module.exports = {
         } catch(err) {
             errorHandler(res, err)
         }
-    }],
+    },
 
-    getPatientAppointments: [isAuthenticated, async (req, res) => {
+    getPatientAppointments: async (req, res) => {
         try {
             const patientId = req.params.patientId;
 
@@ -115,9 +115,9 @@ module.exports = {
             console.error("Error fetching patient's appointments:", err)
             res.status(500).send(err)
         }
-    }],
+    },
     
-    getDetails: [isAuthenticated, async (req, res) => {
+    getDetails: async (req, res) => {
         try {
             const appointment = await Appointment.findById(req.params.id)
             if (!appointment) {
@@ -129,9 +129,9 @@ module.exports = {
         } catch(err) {
             errorHandler(res, err)
         }
-    }],
+    },
     
-    updateAppointment: [isAuthenticated, async (req, res) => {
+    updateAppointment: async (req, res) => {
         try {
             const appointmentId = req.params.id;
             const updatedFields = req.body;
@@ -155,9 +155,9 @@ module.exports = {
         } catch(err) {
             errorHandler(res, err)
         }
-    }],
+    },
     
-    deleteAppointment: [isAuthenticated, async (req, res) => {
+    deleteAppointment: async (req, res) => {
         try {
             const appointmentId = req.params.id;
     
@@ -178,7 +178,7 @@ module.exports = {
         } catch(err) {
             errorHandler(res, err)
         }
-    }]
+    }
 }
 
 

@@ -13,6 +13,7 @@ const About = () => {
                 has grown to be one of the most trusted healthcare 
                 providers in the region.
                 </p>
+                <section>
                 <h2>Our Mission</h2>
                     <p>
                     Our mission is to provide quality healthcare 
@@ -23,6 +24,8 @@ const About = () => {
                     of each patient and ensuring they receive 
                     the best possible care.
                     </p>
+                </section>
+                <section>
                 <h2>Our Team</h2>
                     <p>
                     The GeneralCareClinic team comprises seasoned 
@@ -32,6 +35,8 @@ const About = () => {
                     Physicians, Pediatricians, Dermatologists, 
                     and Chiropractors, among others.
                     </p>
+                </section>
+                <section>
                 <h2>Community Engagement</h2>
                     <p>
                     Apart from providing medical services, 
@@ -41,6 +46,7 @@ const About = () => {
                     believe in not only curing but also educating 
                     the community about a healthy lifestyle.
                     </p>
+                </section>
         </div>
     )
 }

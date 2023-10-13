@@ -9,6 +9,7 @@ const Appointments = () => {
     const { userId } = useContext(UserContext);
     const [appointments, setAppointments] = useState([]);
     const [error, setError] = useState(null)
+    const [hasDoctor, setHasDoctor] = useState(null)
 
     useEffect(() => {
         const fetchAppointments = async () => {
@@ -19,20 +20,21 @@ const Appointments = () => {
                 let response;
 
                 if (userId.user_type === "patient") {
-                    response = await axios.get(`http://localhost:4600/patient/${userId.id}/appointments`, {
+                    response = await axios.get(`http://localhost:4600/getPatientAppointments/${userId.id}`, {
                         headers: {
-                            'authorization': token
+                            'authorization': `Bearer ${token}`
                         }
                     });
                 } else if (userId.user_type === "doctor") {
-                    response = await axios.get(`http://localhost:4600/getAppointments`, {
+                    response = await axios.get(`http://localhost:4600/getAllAppointments`, {
                         headers: {
-                            'authorization': token
+                            'authorization': `Bearer ${token}`
                         }
                     })
                 }
 
-                setAppointments(response.data)
+                setAppointments(response.data.appointments)
+                console.log(response.data.appointments)
             } catch (error) {
                 console.error("Error fetching appointments:", error);
                 setError("There was an error getting the appointments.")
@@ -54,7 +56,7 @@ const Appointments = () => {
                             {` `}
                             {appointment.patient_id.last_name} 
                         </p>
-                        <p>Dr. {appointment.doctor_id.last_name}</p>
+                        {/* {<p>Dr. {appointment.doctor_id.last_name}</p>} */}
                         <p>Date: {appointment.appointment_date}</p>
                         <p>Type: {appointment.appointment_type}</p>
                         <p>Notes: {appointment.appointment_text}</p>

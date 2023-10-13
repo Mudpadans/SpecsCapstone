@@ -7,16 +7,20 @@
 }
 
 .about-page h1 {
-    color: #34495e;
+    text-align: center;
+    color: #005999 !important;
+    font-weight: 600;
 }
 
 .about-page h2 {
-    color: #B3C4D6;
+    text-align: center;
+    color: #fff;
 }
 
 .about-page p {
-    color: #34495e;
+    text-align: center;
+    color: #000;
     font-size: 16px;
     line-height: 1.5;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }

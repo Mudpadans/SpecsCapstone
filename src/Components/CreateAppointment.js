@@ -69,28 +69,31 @@ const CreateAppointment = () => {
     }
 
     return (
-        <div className="appointment-page">
-            <h1>Create an Appoinment</h1>
+        <div className="create-appointment-page">
+            <h1>Create an Appointment</h1>
             <form onSubmit={submitHandler}>
-                <input 
-                    type="date"
-                    name="appointment_date"
-                    value={formData.appointment_date}
-                    onChange={changeHandler}
-                    placeholder='Appointment Date'
-                />
-                <input 
-                    type="text"
-                    name="appointment_type"
-                    value={formData.appointment_type}
-                    onChange={changeHandler}
-                    placeholder="Appointment Type"
-                />
+                <div id="first-parameters">
+                    <input 
+                        type="date"
+                        name="appointment_date"
+                        value={formData.appointment_date}
+                        onChange={changeHandler}
+                        placeholder='Appointment Date'
+                    />
+                    <input 
+                        type="text"
+                        name="appointment_type"
+                        value={formData.appointment_type}
+                        onChange={changeHandler}
+                        placeholder="e.g. Consultation, Check-up"
+                    />
+                </div>
                 <textarea 
+                    id="notes-area"
                     name="appointment_text"
                     value={formData.appointment_text}
                     onChange={changeHandler}
-                    placeholder="Appointment Notes"
+                    placeholder="Enter Appointment Details..."
                 ></textarea>
                 <button type="submit">Submit</button>
             </form>

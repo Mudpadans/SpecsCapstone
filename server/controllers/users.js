@@ -107,7 +107,7 @@ module.exports = {
             if (isAuthenticated) {
                 const token = jwt.sign(
                     { id: foundUser.id }, 
-                    SECRET, 
+                    SECRET,     
                     { expiresIn: '1d' }
                 );
 

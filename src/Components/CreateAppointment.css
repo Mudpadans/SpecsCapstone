@@ -1,0 +1,58 @@
+.create-appointment-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    height: 60vh;
+    font-family: 'Roboto', sans-serif;
+}
+
+.create-appointment-page h1 {
+    color: #005999;
+    font-weight: 600;
+}
+
+#first-parameters {
+    display: flex;
+    justify-content: center;
+    gap: 15px; 
+}
+
+#first-parameters input {
+    padding: 5px;
+    width: 180px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+textarea {
+    height: 150px;
+    width: 500px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    resize: vertical;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #005999;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #003f6b;
+}
+

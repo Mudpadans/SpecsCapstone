@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import { storage } from '../localStorageUtil';
 import { UserContext } from '../createContext';
+import './Auth.css'
 
 const PORT = process.env.PORT
 
@@ -77,21 +78,21 @@ const Auth = () => {
         <div className="auth-page">
             <h1>{isSignup ? 'Signup' : 'Login'}</h1>
             <form onSubmit={submitHandler}>
-                
-                <input 
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={changeHandler}
-                    placeholder="Email"
-                />
-                <input 
-                    type="password"
-                    name="password"
-                    value={formData.password}
-                    onChange={changeHandler}
-                    placeholder="Password"
-                />
+                <div id='first-parameters'></div>
+                    <input 
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={changeHandler}
+                        placeholder="Email"
+                    />
+                    <input 
+                        type="password"
+                        name="password"
+                        value={formData.password}
+                        onChange={changeHandler}
+                        placeholder="Password"
+                    />
                 {isSignup && (
                     <div>
                         <div className="user-type-buttons">
@@ -116,34 +117,38 @@ const Auth = () => {
                             Doctor
                         </label>
                         </div>
-                        <input 
-                            type="text"
-                            name="first_name"
-                            value={formData.first_name}
-                            onChange={changeHandler}
-                            placeholder="First Name"
-                        />
-                        <input 
-                            type="text"
-                            name="last_name"
-                            value={formData.last_name}
-                            onChange={changeHandler}
-                            placeholder="Last Name"
-                        />
-                        <input 
-                            type="date"
-                            name="dob"
-                            value={formData.dob}
-                            onChange={changeHandler}
-                            placeholder="Birth Date"
-                        />
-                        <input 
-                            type="text"
-                            name="phone_number"
-                            value={formData.phone_number}
-                            onChange={changeHandler}
-                            placeholder="Phone Number"
-                        />
+                        <div className='names'>
+                            <input 
+                                type="text"
+                                name="first_name"
+                                value={formData.first_name}
+                                onChange={changeHandler}
+                                placeholder="First Name"
+                            />
+                            <input 
+                                type="text"
+                                name="last_name"
+                                value={formData.last_name}
+                                onChange={changeHandler}
+                                placeholder="Last Name"
+                            />
+                        </div>
+                        <div className='personal-info'>
+                            <input 
+                                type="date"
+                                name="dob"
+                                value={formData.dob}
+                                onChange={changeHandler}
+                                placeholder="Birth Date"
+                            />
+                            <input 
+                                type="text"
+                                name="phone_number"
+                                value={formData.phone_number}
+                                onChange={changeHandler}
+                                placeholder="Phone Number"
+                            />
+                        </div>
                     </div>
                 )}
                 
@@ -179,7 +184,6 @@ const Auth = () => {
             <button onClick={toggleIsSignup}>
                 {isSignup ? 'Already have an account? Login' : 'Don\'t have an account? Sign up'}
             </button>
-            <button onClick={logoutHandler}>Logout</button>
         </div>
     )
 }
