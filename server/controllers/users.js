@@ -64,13 +64,27 @@ module.exports = {
                 return res.status(400).send('Invalid user type provided!')
             }
 
-            res.status(200).send({
-                message: 'User registered successfully',
+            const token = jwt.sign(
+                { id: newUser.id },
+                SECRET,
+                { expiresIn: '1d'}
+            )
+
+            const exp = Date.now() + 1000 * 60 * 60 * 24;
+
+            const data = {
                 userId: newUser.id,
                 username: newUser.email,
-                user_type: newUser.user_type
+                user_type: newUser.user_type,
+                token: token,
+                exp: exp
+            }
+
+            res.status(200).send({
+                message: 'User registered successfully',
+                ...data
             });
-            // console.log(data)
+            console.log(data)
 
         } catch(err) {
             console.log(err);

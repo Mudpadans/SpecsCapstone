@@ -8,8 +8,7 @@ const PORT = process.env.PORT
 const Appointments = () => {
     const { userId } = useContext(UserContext);
     const [appointments, setAppointments] = useState([]);
-    const [error, setError] = useState(null)
-    const [hasDoctor, setHasDoctor] = useState(null)
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchAppointments = async () => {
@@ -52,12 +51,12 @@ const Appointments = () => {
                 {appointments.map(appointment => (
                     <li key={appointment.id}>
                         <p>Patient: 
-                            {appointment.patient_id.first_name} 
+                            {appointment.Patient && appointment.Patient.first_name} 
                             {` `}
-                            {appointment.patient_id.last_name} 
+                            {appointment.Patient && appointment.Patient.last_name} 
                         </p>
-                        {/* {<p>Dr. {appointment.doctor_id.last_name}</p>} */}
-                        <p>Date: {appointment.appointment_date}</p>
+                        {appointment.Doctor && <p>Dr. {appointment.Doctor.last_name}</p>}
+                        <p>Date: {new Date(appointment.appointment_date).toLocaleDateString()}</p>
                         <p>Type: {appointment.appointment_type}</p>
                         <p>Notes: {appointment.appointment_text}</p>
                         <p>Status: {appointment.status}</p>

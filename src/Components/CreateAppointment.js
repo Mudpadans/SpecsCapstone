@@ -52,9 +52,7 @@ const CreateAppointment = () => {
         }
 
         try {
-            console.log('Sending the following data:', appointmentData);
             const token = storage.getItem('token')
-            console.log(token)
             const res = await axios.post(
                 `http://localhost:4600/createAppointment`, 
                 appointmentData, {
@@ -62,7 +60,7 @@ const CreateAppointment = () => {
                         'Authorization': `Bearer ${token}`
                     }
                 });
-            console.log(res.data.message)
+            window.alert("Appoinment successfully created!!")
         } catch (err) {
             console.error("Error creating appointment", err)
         }

@@ -5,6 +5,7 @@ const { Appointment } = require('../models/models');
 const { Doctor } = require('../models/models');
 const { Patient } = require('../models/models')
 const isAuthenticated = require('../middleware/isAuthenticated');
+const { all } = require('axios');
 
 // const getPaginationOptions = (req) => {
 //     const page = parseInt(req.query.page) || 1;
@@ -60,32 +61,17 @@ module.exports = {
     },
     
     getAppointments: async (req, res) => {
-        // const { page, limit, skip, sort } = getPaginationOptions(req);
-
-        // let query = {};
-        // if (req.query.status) {
-        //     query.status = req.query.status;
-        // }
-    
-        // if (req.query.appointmentType) {
-        //     query.appointmen_type = req.query.appointment_type;
-        // }
     
         try {
-            const allAppointments = await Appointment.find(query)
-                // .skip(skip)
-                // .limit(limit)
-                // .sort(sort)
-    
-            const total = await Appointment.countDocuments(query)
+            const allAppointments = await Appointment.findAll()    
+            console.log(allAppointments)
     
             res.status(200).json({
-                totalPages: Math.ceil(total / limit),
-                currentPage: page,
                 appointments: allAppointments
             })
         } catch(err) {
-            errorHandler(res, err)
+            console.error("Error fetching all appointments:", err);
+            res.status(500).send(err)
         }
     },
 
@@ -97,7 +83,7 @@ module.exports = {
                 where: { patient_id: patientId },
                 include: [
                     { model: Patient, attributes: ['first_name', 'last_name'] },
-                    // { model: Doctor, attributes: ['first_name', 'last_name'] }
+                    { model: Doctor, attributes: ['first_name', 'last_name'] }
                 ]
             });
 
