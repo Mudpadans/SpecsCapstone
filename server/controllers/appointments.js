@@ -63,7 +63,12 @@ module.exports = {
     getAppointments: async (req, res) => {
     
         try {
-            const allAppointments = await Appointment.findAll()    
+            const allAppointments = await Appointment.findAll({
+                include: [
+                    { model: Patient, attributes: ['first_name', 'last_name'] },
+                    { model: Doctor, attributes: ['first_name', 'last_name'] }
+                ]
+            })    
             console.log(allAppointments)
     
             res.status(200).json({
