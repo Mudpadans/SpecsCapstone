@@ -42,6 +42,27 @@ const Appointments = () => {
 
         fetchAppointments();
     }, [userId])
+
+    const updateAppointmentStatus = async (appointmentId, newStatus) => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.put(`http://localhost:4600/updateAppointmentStatus/${appointmentId.id}`, {
+                status: newStatus,
+                doctor_id: userId.id
+            }, {
+                headers: {
+                    'authorization': `Bearer ${token}`
+                }
+            })
+
+            setAppointments(appointments.map(app => 
+                app.id === appointmentId ? {...app, status:newStatus, doctor_id: userId.id} : app
+            ))
+        } catch (err) {
+            console.error('Error updating appointment:', err)
+            setError("There was an eror updating the appointment status.")
+        }
+    }
     
     return (
         <div className="appointments-page">
@@ -60,6 +81,16 @@ const Appointments = () => {
                         <p>Type: {appointment.appointment_type}</p>
                         <p>Notes: {appointment.appointment_text}</p>
                         <p>Status: {appointment.status}</p>
+                        {userId.user_type === 'doctor' && (
+                            <select
+                                value={appointment.status}
+                                onChange={(e) => updateAppointmentStatus(appointment.id, e.target.value)}
+                            >
+                                <option value="Pending">Pending</option>
+                                <option value="Confirmed">Confirmed</option>
+                                <option value="Completed">Completed</option>
+                            </select>
+                        )}
                     </li>
                 ))}
             </ul>

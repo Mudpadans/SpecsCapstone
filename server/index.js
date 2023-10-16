@@ -20,7 +20,7 @@ app.post('/login', userController.login);
 app.post('/createAppointment', isAuthenticated, appointmentController.createAppointment);
 app.get('/getAllAppointments', isAuthenticated, appointmentController.getAppointments);
 app.get('/getPatientAppointments/:patientId', isAuthenticated, appointmentController.getPatientAppointments);
-app.get('/getDetails/:appointment_id', isAuthenticated, appointmentController.getDetails);
+app.put('/updateAppointmentStatus/:appointment_id', isAuthenticated, appointmentController.updateAppointmentStatus);
 app.put('/updateAppointment/:appointment_id', isAuthenticated, appointmentController.updateAppointment);
 app.delete('/deleteAppointment/:appointment_id', isAuthenticated, appointmentController.deleteAppointment);
 

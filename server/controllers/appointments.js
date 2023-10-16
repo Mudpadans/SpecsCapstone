@@ -107,18 +107,41 @@ module.exports = {
             res.status(500).send(err)
         }
     },
-    
-    getDetails: async (req, res) => {
+
+    updateAppointmentStatus: async (req, res) => {
         try {
-            const appointment = await Appointment.findById(req.params.id)
-            if (!appointment) {
-                return res.status(404).json({ 
-                    message: 'Appointment not found'
+            const appointmentId = req.params.id;
+            const { status, doctor_id } = req.body;
+            console.log(req.params)
+
+            if (req.userId.user_type !== "doctor") {
+                return res.status(403).json({
+                    message: 'Only doctors can update appointments'
                 })
             }
-            res.status(200).json({ appointment })
-        } catch(err) {
-            errorHandler(res, err)
+
+            const updatedAppointment = await Appointment.update(
+                { status, doctor_id },
+                {
+                    where: { id: appointmentId },
+                    returning: true
+                }
+            );
+
+            if(!updatedAppointment || updatedAppointment[0] === 0) {
+                return res.status(404).json({
+                    message: 'Appointment not found'
+                });
+            }
+
+            res.status(200).json({
+                message: 'Appointment status updated',
+                appointment: updatedAppointment[1][0]
+            })
+        }
+        catch (err) {
+            console.error("Error updating patient's appointment status:", err)
+            res.status(500).send(err)
         }
     },
     
