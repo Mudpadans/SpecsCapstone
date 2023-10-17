@@ -109,14 +109,30 @@ module.exports = {
     },
 
     updateAppointmentStatus: async (req, res) => {
+        console.log('Params:', req.params)
+        console.log('Body:', req.body)
+        console.log('Headers:', req.headers)
+        console.log('Url:', req.originalUrl)
+        console.log('Id:', req.userId)
         try {
-            const appointmentId = req.params.id;
+            const appointmentId = req.params.appointment_id;
             const { status, doctor_id } = req.body;
-            console.log(req.params)
+
+            if (!req.userId) {
+                return res.status(403).json({
+                    message: 'User not authenticated!'
+                })
+            }
 
             if (req.userId.user_type !== "doctor") {
                 return res.status(403).json({
                     message: 'Only doctors can update appointments'
+                })
+            }
+
+            if (!appointmentId) {
+                return res.status(400).json({
+                    message: 'Appointment ID missing'
                 })
             }
 

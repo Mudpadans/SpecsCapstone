@@ -3,7 +3,6 @@ const SECRET = process.env.SECRET;
 
 const isAuthenticated = (req, res, next) => {
     let token = req.headers.authorization;
-
     let userId = req.params
 
     if (!token) {
@@ -24,8 +23,8 @@ const isAuthenticated = (req, res, next) => {
             console.log("JWT Verification Error Name:", err.name);
             return res.status(401).json({ message: 'Invalid token', error: err.message });
         } else {
-            userId = decoded.id;
-            
+            req.userId = decoded
+            // userId = decoded.id;
             next();
         }
     })

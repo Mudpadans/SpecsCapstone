@@ -44,9 +44,10 @@ const Appointments = () => {
     }, [userId])
 
     const updateAppointmentStatus = async (appointmentId, newStatus) => {
+        console.log("Appointment:", appointmentId, "User:", userId)
         try {
             const token = localStorage.getItem('token');
-            const response = await axios.put(`http://localhost:4600/updateAppointmentStatus/${appointmentId.id}`, {
+            const response = await axios.put(`http://localhost:4600/updateAppointmentStatus/${appointmentId}`, {
                 status: newStatus,
                 doctor_id: userId.id
             }, {
@@ -54,6 +55,8 @@ const Appointments = () => {
                     'authorization': `Bearer ${token}`
                 }
             })
+
+            console.log(response)
 
             setAppointments(appointments.map(app => 
                 app.id === appointmentId ? {...app, status:newStatus, doctor_id: userId.id} : app

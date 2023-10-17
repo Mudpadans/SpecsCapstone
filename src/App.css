@@ -92,6 +92,7 @@ h2 {
 }
 
 footer {
+    position: static;
     background-color: #005999;
     color: white;
     text-align: center;
