@@ -18,36 +18,36 @@ const Appointments = () => {
         appointment_text: ''
     });
 
-    useEffect(() => {
-        const fetchAppointments = async () => {
-            if (!userId) return;
+    const fetchAppointments = async () => {
+        if (!userId) return;
 
-            try {
-                const token = localStorage.getItem('token')
-                let response;
+        try {
+            const token = localStorage.getItem('token')
+            let response;
 
-                if (userId.user_type === "patient") {
-                    response = await axios.get(`http://localhost:4600/getPatientAppointments/${userId.id}`, {
-                        headers: {
-                            'authorization': `Bearer ${token}`
-                        }
-                    });
-                } else if (userId.user_type === "doctor") {
-                    response = await axios.get(`http://localhost:4600/getAllAppointments`, {
-                        headers: {
-                            'authorization': `Bearer ${token}`
-                        }
-                    })
-                }
-
-                setAppointments(response.data.appointments)
-                console.log(response.data.appointments)
-            } catch (error) {
-                console.error("Error fetching appointments:", error);
-                setError("There was an error getting the appointments.")
+            if (userId.user_type === "patient") {
+                response = await axios.get(`http://localhost:4600/getPatientAppointments/${userId.id}`, {
+                    headers: {
+                        'authorization': `Bearer ${token}`
+                    }
+                });
+            } else if (userId.user_type === "doctor") {
+                response = await axios.get(`http://localhost:4600/getAllAppointments`, {
+                    headers: {
+                        'authorization': `Bearer ${token}`
+                    }
+                })
             }
-        };
 
+            setAppointments(response.data.appointments)
+            console.log(response.data.appointments)
+        } catch (error) {
+            console.error("Error fetching appointments:", error);
+            setError("There was an error getting the appointments.")
+        }
+    };
+
+    useEffect(() => {
         fetchAppointments();
     }, [userId])
 
@@ -113,10 +113,42 @@ const Appointments = () => {
                         'Authorization': `Bearer ${token}`
                     }
                 });
-            window.alert("Appointment successfully updated!!")
-            setShowModal(false);
+
+            if (res.status === 200) {
+                fetchAppointments()
+
+                window.alert("Appointment successfully updated!!")
+                setShowModal(false);
+            }
+
         } catch (err) {
-            console.error("Error creating appointment", err)
+            console.error("Error updating appointment", err)
+            setError("There was an error updating the appointment.");
+        }
+    }
+
+    const deleteHandler = async (appointment) => {
+
+        try {
+            const token = localStorage.getItem('token')
+            console.log(appointment)
+            const res = await axios.delete(
+                `http://localhost:4600/deleteAppointment/${appointment.id}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                }
+            )
+
+            if (res.status === 200) {
+                fetchAppointments()
+
+                window.alert("Appointment successfully deleted!!")
+            }
+
+        } catch (err) {
+            console.error("Error deleting appointment", err)
+            setError("There was an error deleting the appointment.");
         }
     }
     
@@ -125,76 +157,80 @@ const Appointments = () => {
             <h1>Appointments</h1>
             {userId ? (
                 <>
-                    {error && <p className="error-message">{error}</p>}
+                    {error && appointments.length > 0 && <p className="error-message">{error}</p>}
                     <ul>
-                        {appointments.map(appointment => (
-                            <li key={appointment.id}>
-                                <p>Patient: 
-                                    {appointment.Patient && appointment.Patient.first_name} 
-                                    {` `}
-                                    {appointment.Patient && appointment.Patient.last_name} 
-                                </p>
-                                <p>Doctor: 
-                                    {appointment.Doctor && `Dr. ${appointment.Doctor.last_name}`}
-                                </p>
-                                <p>Date: {new Date(appointment.appointment_date).toLocaleDateString()}</p>
-                                <p>Type: {appointment.appointment_type}</p>
-                                <p>Notes: {appointment.appointment_text}</p>
-                                <p>Status: {appointment.status}</p>
-                                {userId.user_type === 'doctor' && (
-                                    <select
-                                        value={appointment.status}
-                                        onChange={(e) => updateAppointmentStatus(appointment.id, e.target.value)}
-                                    >
-                                        <option value="Pending">Pending</option>
-                                        <option value="Confirmed">Confirmed</option>
-                                        <option value="Completed">Completed</option>
-                                    </select>
-                                )}
-                                {userId.user_type === 'patient' && (
-                                    <div className="patient-buttons">
-                                        <button onClick={() => openUpdateModal(appointment)}>Update</button>
-                                        <button>Delete</button>
-                                    </div>
-                                )}
-                                {showModal && (
-                                    <div className='modal'>
-                                        <div className='modal-content'>
-                                            <h2>Update Appointment</h2>
-                                            <form onSubmit={submitHandler}>
-                                                <div id="first-parameters">
-                                                    <input 
-                                                        type="date"
-                                                        name="appointment_date"
-                                                        value={formData.appointment_date}
-                                                        onChange={changeHandler}
-                                                        placeholder='Appointment Date'
-                                                    />
-                                                    <input 
-                                                        type="text"
-                                                        name="appointment_type"
-                                                        value={formData.appointment_type}
-                                                        onChange={changeHandler}
-                                                        placeholder="e.g. Consultation, Check-up"
-                                                    />
-                                                </div>
-                                                <textarea 
-                                                    id="notes-area"
-                                                    name="appointment_text"
-                                                    value={formData.appointment_text}
-                                                    onChange={changeHandler}
-                                                    placeholder="Enter Appointment Details..."
-                                                ></textarea>
-                                                <button type="submit">Submit</button>
-                                            </form>
-                                            <button onClick={() => {
-                                                setShowModal(false);
-                                            }}>Close</button>
+                        {appointments.length > 0 ? (
+                            appointments.map(appointment => (
+                                <li key={appointment.id}>
+                                    <p>Patient: 
+                                        {appointment.Patient && appointment.Patient.first_name} 
+                                        {` `}
+                                        {appointment.Patient && appointment.Patient.last_name} 
+                                    </p>
+                                    <p>Doctor: 
+                                        {appointment.Doctor && `Dr. ${appointment.Doctor.last_name}`}
+                                    </p>
+                                    <p>Date: {new Date(appointment.appointment_date).toLocaleDateString()}</p>
+                                    <p>Type: {appointment.appointment_type}</p>
+                                    <p>Notes: {appointment.appointment_text}</p>
+                                    <p>Status: {appointment.status}</p>
+                                    {userId.user_type === 'doctor' && (
+                                        <select
+                                            value={appointment.status}
+                                            onChange={(e) => updateAppointmentStatus(appointment.id, e.target.value)}
+                                        >
+                                            <option value="Pending">Pending</option>
+                                            <option value="Confirmed">Confirmed</option>
+                                            <option value="Completed">Completed</option>
+                                        </select>
+                                    )}
+                                    {userId.user_type === 'patient' && (
+                                        <div className="patient-buttons">
+                                            <button onClick={() => openUpdateModal(appointment)}>Update</button>
+                                            <button onClick={() => deleteHandler(appointment)}>Delete</button>
                                         </div>
-                                    </div>
-                                )}
-                            </li>
-                        ))}
+                                    )}
+                                    {showModal && (
+                                        <div className='modal'>
+                                            <div className='modal-content'>
+                                                <h2>Update Appointment</h2>
+                                                <form onSubmit={submitHandler}>
+                                                    <div id="first-parameters">
+                                                        <input 
+                                                            type="date"
+                                                            name="appointment_date"
+                                                            value={formData.appointment_date}
+                                                            onChange={changeHandler}
+                                                            placeholder='Appointment Date'
+                                                        />
+                                                        <input 
+                                                            type="text"
+                                                            name="appointment_type"
+                                                            value={formData.appointment_type}
+                                                            onChange={changeHandler}
+                                                            placeholder="e.g. Consultation, Check-up"
+                                                        />
+                                                    </div>
+                                                    <textarea 
+                                                        id="notes-area"
+                                                        name="appointment_text"
+                                                        value={formData.appointment_text}
+                                                        onChange={changeHandler}
+                                                        placeholder="Enter Appointment Details..."
+                                                    ></textarea>
+                                                    <button type="submit">Submit</button>
+                                                </form>
+                                                <button onClick={() => {
+                                                    setShowModal(false);
+                                                }}>Close</button>
+                                            </div>
+                                        </div>
+                                    )}
+                                </li>
+                            ))
+                        ) : (
+                            <p>No appointments available, create one <a href='/createAppointment'>here</a></p>
+                        )}
                     </ul>
                 </>
             ) : (

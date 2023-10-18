@@ -158,7 +158,8 @@ module.exports = {
     
     updateAppointment: async (req, res) => {
         try {
-            const appointmentId = req.params.id;
+            const appointmentId = req.params.appointment_id;
+            console.log('Params: ', req.params)
             const updatedFields = req.body;
     
             const [updatedRows, [updatedAppointment]] = await Appointment.update(
@@ -187,8 +188,8 @@ module.exports = {
     
     deleteAppointment: async (req, res) => {
         try {
-            const appointmentId = req.params.id;
-    
+            const appointmentId = req.params.appointment_id;
+
             const deletedRows = await Appointment.destroy({
                 where: { id: appointmentId }
             })
