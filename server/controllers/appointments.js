@@ -109,11 +109,6 @@ module.exports = {
     },
 
     updateAppointmentStatus: async (req, res) => {
-        console.log('Params:', req.params)
-        console.log('Body:', req.body)
-        console.log('Headers:', req.headers)
-        console.log('Url:', req.originalUrl)
-        console.log('Id:', req.userId)
         try {
             const appointmentId = req.params.appointment_id;
             const { status, doctor_id } = req.body;
@@ -166,13 +161,15 @@ module.exports = {
             const appointmentId = req.params.id;
             const updatedFields = req.body;
     
-            const updatedAppointment = await Appointment.findByIdAndUpdate(
-                appointmentId,
+            const [updatedRows, [updatedAppointment]] = await Appointment.update(
                 updatedFields,
-                { new: true }
-            )
+                { 
+                    where: { id: appointmentId },
+                    returning: true 
+                }
+            );
     
-            if (!updatedAppointment) {
+            if (updatedRows === 0) {
                 return res.status(404).json({ 
                     message: 'Appointment not found' 
                 })
@@ -183,7 +180,8 @@ module.exports = {
                 appointment: updatedAppointment
             })
         } catch(err) {
-            errorHandler(res, err)
+            console.error("Error updating patient's appointment:", err)
+            res.status(500).send(err)
         }
     },
     
@@ -191,22 +189,22 @@ module.exports = {
         try {
             const appointmentId = req.params.id;
     
-            const deletedAppointment = await Appointment.findByIdAndDelete(
-                appointmentId
-            )
+            const deletedRows = await Appointment.destroy({
+                where: { id: appointmentId }
+            })
     
-            if (!deletedAppointment) {
+            if (deletedRows === 0) {
                 return res.status(404).json({ 
                     message: 'Appointment not found' 
                 })
             }
     
             res.status(200).json({
-                message: 'Appointment deleted',
-                appointment: deletedAppointment
+                message: 'Appointment deleted'
             })
         } catch(err) {
-            errorHandler(res, err)
+            console.error("Error deleting patient's appointment:", err)
+            res.status(500).send(err)
         }
     }
 }

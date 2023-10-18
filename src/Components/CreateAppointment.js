@@ -60,7 +60,7 @@ const CreateAppointment = () => {
                         'Authorization': `Bearer ${token}`
                     }
                 });
-            window.alert("Appoinment successfully created!!")
+            window.alert("Appointment successfully created!!")
         } catch (err) {
             console.error("Error creating appointment", err)
         }

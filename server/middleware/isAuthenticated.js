@@ -26,6 +26,7 @@ const isAuthenticated = (req, res, next) => {
             req.userId = decoded
             // userId = decoded.id;
             next();
+            console.log(req.userId)
         }
     })
 }

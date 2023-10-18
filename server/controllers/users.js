@@ -65,7 +65,8 @@ module.exports = {
             }
 
             const token = jwt.sign(
-                { id: newUser.id },
+                { id: newUser.id,
+                  user_type: newUser.user_type },
                 SECRET,
                 { expiresIn: '1d'}
             )
@@ -104,7 +105,7 @@ module.exports = {
                 userType = 'patient'
             }
 
-            console.log('User found:', foundUser ? 'Yes' : 'No');
+            // console.log('User found:', foundUser ? 'Yes' : 'No');
         
             if (!foundUser) {
                 return res.status(403).send('User not found')
@@ -115,12 +116,13 @@ module.exports = {
                 foundUser.password,
             )
 
-            console.log('Password matches:', isAuthenticated ? 'Yes' : 'No');
-            console.log("secret: ", SECRET)
+            // console.log('Password matches:', isAuthenticated ? 'Yes' : 'No');
+            // console.log("secret: ", SECRET)
     
             if (isAuthenticated) {
                 const token = jwt.sign(
-                    { id: foundUser.id }, 
+                    { id: foundUser.id,
+                      user_type: userType }, 
                     SECRET,     
                     { expiresIn: '1d' }
                 );
@@ -139,9 +141,9 @@ module.exports = {
                             exp: exp,
                         };
                         
-                        console.log("Immediate verification successful:", decoded);
-                        console.log(token)
-                        console.log("Found user: ", foundUser);
+                        // console.log("Immediate verification successful:", decoded);
+                        // console.log(token)
+                        // console.log("Found user: ", foundUser);
                         return res.status(200).send(data);
                     }
                 });
