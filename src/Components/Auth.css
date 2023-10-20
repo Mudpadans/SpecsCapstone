@@ -38,3 +38,19 @@
     font-size: 14px;
 }
 
+@media (max-width: 550px){
+    #first-parameters input, .names input, .personal-info input {
+        width: 120px;
+    }
+
+    textarea {
+        width: 250px;
+    }
+}
+
+@media (max-height: 700px) {
+    .auth-page {
+        height: 140vh;
+    }
+}
+

@@ -56,3 +56,9 @@ button:hover {
     background-color: #003f6b;
 }
 
+
+@media (max-height: 750px) {
+    .create-appointment-page {
+        height: 70vh;
+    }
+}

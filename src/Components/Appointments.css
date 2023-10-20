@@ -58,6 +58,13 @@ form {
     margin-bottom: 20px;
 }
 
+.patient-buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+}
+
 button {
     padding: 10px 20px;
     background-color: #005999;
