@@ -4,22 +4,6 @@ const express = require('express');
 const { Appointment } = require('../models/models');
 const { Doctor } = require('../models/models');
 const { Patient } = require('../models/models')
-const isAuthenticated = require('../middleware/isAuthenticated');
-const { all } = require('axios');
-
-// const getPaginationOptions = (req) => {
-//     const page = parseInt(req.query.page) || 1;
-//     const limit = parseInt(req.query.limit) || 10;
-//     const skip = (page - 1) * limit;
-    
-//     let sort = {};
-//     if (req.query.sortBy) {
-//         const str = req.query.sortBy.split(',');
-//         sort[str[0]] = str[1] === 'desc' ? -1 : 1;    
-//     }
-
-//     return { page, limit, skip, sort };
-// }
 
 module.exports = {
     createAppointment: async (req, res) => {
@@ -44,8 +28,8 @@ module.exports = {
                 appointment_text
             }, {
                 include: [
-                    { model: Patient, attributes: ['first_name', 'last_name'] },
-                    { model: Doctor, attributes: ['first_name', 'last_name'] }
+                    { model: Patient, attributes: ['first_name', 'last_name', 'phone_number'] },
+                    { model: Doctor, attributes: ['first_name', 'last_name', 'phone_number'] }
                 ]
             })
 
@@ -65,8 +49,8 @@ module.exports = {
         try {
             const allAppointments = await Appointment.findAll({
                 include: [
-                    { model: Patient, attributes: ['first_name', 'last_name'] },
-                    { model: Doctor, attributes: ['first_name', 'last_name'] }
+                    { model: Patient, attributes: ['first_name', 'last_name', 'phone_number'] },
+                    { model: Doctor, attributes: ['first_name', 'last_name', 'phone_number'] }
                 ]
             })    
             console.log(allAppointments)
@@ -87,8 +71,8 @@ module.exports = {
             const patientAppointments = await Appointment.findAll({
                 where: { patient_id: patientId },
                 include: [
-                    { model: Patient, attributes: ['first_name', 'last_name'] },
-                    { model: Doctor, attributes: ['first_name', 'last_name'] }
+                    { model: Patient, attributes: ['first_name', 'last_name', 'phone_number'] },
+                    { model: Doctor, attributes: ['first_name', 'last_name', 'phone_number'] }
                 ]
             });
 
@@ -111,7 +95,8 @@ module.exports = {
     updateAppointmentStatus: async (req, res) => {
         try {
             const appointmentId = req.params.appointment_id;
-            const { status, doctor_id } = req.body;
+            const { status } = req.body;
+            const doctor_id = req.userId.id
 
             if (!req.userId) {
                 return res.status(403).json({
@@ -131,8 +116,26 @@ module.exports = {
                 })
             }
 
+            const existingAppointment = await Appointment.findOne({
+                where: { id: appointmentId }
+            })
+
+            if (!existingAppointment) {
+                return res.status(404).json({
+                    message: 'Appointment not found'
+                })
+            }
+
+            if (existingAppointment.doctor_id && existingAppointment.doctor_id !== doctor_id) {
+                return res.status(403).json({
+                    message: 'Another doctor has scheduled this appointment'
+                })
+            }
+
+            const newDoctorId = status === 'Pending' ? null : doctor_id
+
             const updatedAppointment = await Appointment.update(
-                { status, doctor_id },
+                { status, doctor_id: newDoctorId },
                 {
                     where: { id: appointmentId },
                     returning: true

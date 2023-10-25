@@ -79,8 +79,8 @@ const Appointments = () => {
 
     const filteredAppointments = appointments.filter(appointment => {
         return (
-            (filter.name === "" || appointment.Patient?.first_name.includes(filter.name)) &&
-            (filter.type === "" || appointment.appointment_type.includes(filter.type)) &&
+            (filter.name === "" || appointment.Patient?.first_name.toLowerCase().includes(filter.name)) &&
+            (filter.type === "" || appointment.appointment_type.toLowerCase().includes(filter.type)) &&
             (filter.status === "" || appointment.status.includes(filter.status))
         );
     });
@@ -100,9 +100,7 @@ const Appointments = () => {
 
             console.log(response)
 
-            setAppointments(appointments.map(app => 
-                app.id === appointmentId ? {...app, status:newStatus, doctor_id: userId.id} : app
-            ))
+            fetchAppointments()
         } catch (err) {
             console.error('Error updating appointment status:', err)
             setError("There was an error updating the appointment status.")
@@ -214,8 +212,14 @@ const Appointments = () => {
                                             {` `}
                                             {appointment.Patient && appointment.Patient.last_name} 
                                         </p>
+                                        <p>Patient Phone Number:
+                                            {appointment.Patient && appointment.Patient.phone_number}
+                                        </p>
                                         <p>Doctor: 
                                             {appointment.Doctor && `Dr. ${appointment.Doctor.last_name}`}
+                                        </p>
+                                        <p>Doctor Phone Number:
+                                            {appointment.Doctor && appointment.Doctor.phone_number}
                                         </p>
                                         <p>Date: {new Date(appointment.appointment_date).toLocaleDateString()}</p>
                                         <p>Type: {appointment.appointment_type}</p>
@@ -281,7 +285,7 @@ const Appointments = () => {
                         </ul>
                 </>
                 ) : (
-                    <p className='login message'>Please <a href='/auth'>login/signup</a> to view appointments</p>
+                    <p className='login message'>Please <a href='/auth'>login/signup</a> to create and view appointments</p>
                 )}
             </div>
     )

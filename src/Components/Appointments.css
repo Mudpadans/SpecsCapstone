@@ -30,6 +30,24 @@
     list-style-type: none;
 }
 
+.modal {
+    max-width: 100%;
+    margin: 15px;  
+}
+
+.modal-content {
+    max-width: 100%;
+}
+
+.modal-content form {
+    max-width: 100%;
+    overflow: auto;
+}
+
+#first-parameters, #notes-area {
+    max-width: 100%;
+}
+
 @media (max-width: 1200px) {
     .appointments-container {
         grid-template-columns: repeat(2, 1fr);
@@ -76,4 +94,11 @@ button {
 
 button:hover {
     background-color: #003f6b;
+}
+
+select {
+    padding: 10px 10px;
+    background-color: #005999;
+    color: #fff;
+    border-radius: 5px;
 }

@@ -141,9 +141,6 @@ module.exports = {
                             exp: exp,
                         };
                         
-                        // console.log("Immediate verification successful:", decoded);
-                        // console.log(token)
-                        // console.log("Found user: ", foundUser);
                         return res.status(200).send(data);
                     }
                 });
