@@ -15,7 +15,30 @@ const Patient = sequelize.define('Patient', {
     password: DataTypes.TEXT, 
     phone_number: DataTypes.BIGINT,
     dob: DataTypes.DATE,
-    medical_history: DataTypes.STRING,
+    immunizations: {
+        type: DataTypes.TEXT,
+        allowNull: true
+    },
+    surgeries: {
+        type: DataTypes.TEXT,
+        allowNull: true
+    },
+    hospitalizations: {
+        type: DataTypes.TEXT,
+        allowNull: true
+    },
+    medications: {
+        type: DataTypes.TEXT,
+        allowNull: true
+    },
+    allergies: {
+        type: DataTypes.TEXT,
+        allowNull: true
+    },
+    weight: {
+        type: DataTypes.STRING,
+        allowNull: true
+    }
 }, {
     sequelize,
     modelName: 'Patient',

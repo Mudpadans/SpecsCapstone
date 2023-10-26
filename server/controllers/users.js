@@ -19,7 +19,12 @@ module.exports = {
                 last_name,
                 phone_number,
                 dob,
-                medical_history,
+                immunizations,
+                surgeries,
+                hospitalizations,
+                medications,
+                allergies,
+                weight,
                 credentials,
                 specializations
             } = req.body
@@ -46,7 +51,12 @@ module.exports = {
                     last_name,
                     phone_number,
                     dob,
-                    medical_history,
+                    immunizations,
+                    surgeries,
+                    hospitalizations,
+                    medications,
+                    allergies,
+                    weight
                 });
             } else if (user_type === 'doctor') {
                 newUser = await Doctor.create({
@@ -104,8 +114,6 @@ module.exports = {
                 foundUser = await Patient.findOne({ where: { email }})
                 userType = 'patient'
             }
-
-            // console.log('User found:', foundUser ? 'Yes' : 'No');
         
             if (!foundUser) {
                 return res.status(403).send('User not found')
@@ -115,9 +123,6 @@ module.exports = {
                 password,
                 foundUser.password,
             )
-
-            // console.log('Password matches:', isAuthenticated ? 'Yes' : 'No');
-            // console.log("secret: ", SECRET)
     
             if (isAuthenticated) {
                 const token = jwt.sign(
@@ -127,7 +132,7 @@ module.exports = {
                     { expiresIn: '1d' }
                 );
 
-                jwt.verify(token, SECRET, (err, decoded) => {
+                jwt.verify(token, SECRET, (err) => {
                     if (err) {
                         console.log("Immediate verification error:", err);
                         return res.status(403).send("Invalid token")
