@@ -102,3 +102,7 @@ select {
     color: #fff;
     border-radius: 5px;
 }
+
+textarea {
+    width: 280px;
+}

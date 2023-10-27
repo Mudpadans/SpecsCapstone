@@ -99,9 +99,9 @@ const Auth = () => {
 
     return (
         <div className="auth-page">
-            <h1>{formStep.toUpperCase()}</h1>
+            <h1>{formStep === 'login' ? 'LOGIN' : 'SIGNUP'}</h1>
             <form onSubmit={submitHandler}>
-                {formStep === 'signup1' || 'login' && (
+                {(formStep === 'signup1' || formStep === 'login') && (
                     <div id='first-parameters'>
                         <input 
                             type="email"
