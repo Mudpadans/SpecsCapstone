@@ -9,6 +9,7 @@ const Appointments = () => {
     const [error, setError] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [currentAppointment, setCurrentAppointment] = useState(false);
+    const [refresh, setRefresh] = useState(false)
     const [formData, setFormData] = useState({
         patient_id: '',
         doctor_id: '',
@@ -46,6 +47,11 @@ const Appointments = () => {
 
             setAppointments(response.data.appointments)
             console.log(response.data.appointments)
+            setError(null)
+
+            if (response.data.appointments.length <= 0) {
+                console.log('No appointments found')
+            }
         } catch (error) {
             console.error("Error fetching appointments:", error);
             setError("There was an error getting the appointments.")
@@ -54,7 +60,7 @@ const Appointments = () => {
 
     useEffect(() => {
         fetchAppointments();
-    }, [userId])
+    }, [userId, refresh])
 
     useEffect(() => {
         if(currentAppointment) {
@@ -79,7 +85,10 @@ const Appointments = () => {
 
     const filteredAppointments = appointments.filter(appointment => {
         return (
-            (filter.name === "" || appointment.Patient?.first_name.toLowerCase().includes(filter.name)) &&
+            (filter.name === "" || 
+                appointment.Patient?.first_name.toLowerCase().includes(filter.name) || 
+                appointment.Patient?.last_name.toLowerCase().includes(filter.name
+            )) &&
             (filter.type === "" || appointment.appointment_type.toLowerCase().includes(filter.type)) &&
             (filter.status === "" || appointment.status.includes(filter.status))
         );
@@ -160,8 +169,8 @@ const Appointments = () => {
             )
 
             if (res.status === 200) {
-                fetchAppointments()
-
+                await fetchAppointments()
+                setRefresh(!refresh);
                 window.alert("Appointment successfully deleted!!")
             }
 
@@ -176,8 +185,10 @@ const Appointments = () => {
             <h1>Appointments</h1>
             {userId ? (
                 <>
-                    {error && appointments.length > 0 && <p className="error-message">{error}</p>}
-                        <form className='filter-form'>
+                    {error && <p className="error-message">{error}</p>}
+                    {appointments.length > 0 ? (
+                        <>
+                            <form className='filter-form'>
                             <input 
                                 type='text'
                                 placeholder='Filter by Name'
@@ -204,7 +215,7 @@ const Appointments = () => {
                             </select>
                         </form>
                         <ul className='appointments-container'>
-                            {appointments.length > 0 ? (
+                            {filteredAppointments.length > 0 ? (
                                 filteredAppointments.map(appointment => (
                                     <li key={appointment.id} className='appointment-card'>
                                         <p>Patient: 
@@ -283,6 +294,10 @@ const Appointments = () => {
                                 <p>No appointments available, create one <a href='/createAppointment'>here</a></p>
                             )}
                         </ul>
+                        </>
+                    ) : (
+                        <p>There's no appointments here</p>
+                    )}
                 </>
                 ) : (
                     <p className='login message'>Please <a href='/auth'>login/signup</a> to create and view appointments</p>
