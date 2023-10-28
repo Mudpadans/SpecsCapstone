@@ -9,6 +9,7 @@ const Appointments = () => {
     const [error, setError] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [currentAppointment, setCurrentAppointment] = useState(false);
+    const [noAppointments, setNoAppointments] = useState(false)
     const [refresh, setRefresh] = useState(false)
     const [formData, setFormData] = useState({
         patient_id: '',
@@ -51,6 +52,9 @@ const Appointments = () => {
 
             if (response.data.appointments.length <= 0) {
                 console.log('No appointments found')
+                setNoAppointments(true);
+            } else {
+                setNoAppointments(false)
             }
         } catch (error) {
             console.error("Error fetching appointments:", error);
@@ -169,8 +173,8 @@ const Appointments = () => {
             )
 
             if (res.status === 200) {
-                await fetchAppointments()
-                setRefresh(!refresh);
+                const updatedAppointments = appointments.filter(app => app.id !== appointment.id);
+                setAppointments(updatedAppointments)
                 window.alert("Appointment successfully deleted!!")
             }
 
@@ -185,7 +189,6 @@ const Appointments = () => {
             <h1>Appointments</h1>
             {userId ? (
                 <>
-                    {error && <p className="error-message">{error}</p>}
                     {appointments.length > 0 ? (
                         <>
                             <form className='filter-form'>
@@ -296,7 +299,7 @@ const Appointments = () => {
                         </ul>
                         </>
                     ) : (
-                        <p>There's no appointments here</p>
+                        <p>No appointments available, create one <a href='/createAppointment'>here</a></p>
                     )}
                 </>
                 ) : (
